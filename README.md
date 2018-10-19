@@ -30,7 +30,7 @@ python clang_visualizer.py [newfile.log]
 
 Inside the same directory as clang_visualizer.py, you will find a new html file called 'clang.html'.
 
-An example html output can be found [here](austinbhale.com/Clang-Visualizer/examples/example.html).
+An example html output can be found [here](https://austinbhale.com/Clang-Visualizer/examples/example.html).
 
 The highlighting functionality uses your local session storage, which will save your changes on exit.
 
