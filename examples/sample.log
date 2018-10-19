@@ -1,0 +1,46 @@
+/home/ahale/clangtidy_generator/clang_visualizer.c:6:1: warning: #includes are not sorted properly [llvm-include-order]
+#include <stdio.h>
+^        ~~~~~~~~~
+         <stddef.h>
+/home/ahale/clangtidy_generator/clang_visualizer.c:27:6: warning: function 'read_log' has a definition with different parameter names [readability-inconsistent-declaration-parameter-name]
+void read_log(FILE *log, node_t *head, node_t **next, char line[]);
+     ^                                                     ~~~~~
+                                                           log_line
+/home/ahale/clangtidy_generator/clang_visualizer.c:1105:6: note: the definition seen here
+void read_log(FILE *log, node_t *head, node_t **next, char log_line[])
+     ^
+/home/ahale/clangtidy_generator/clang_visualizer.c:27:6: note: differing parameters are named here: ('line'), in definition: ('log_line')
+void read_log(FILE *log, node_t *head, node_t **next, char line[]);
+     ^
+/home/ahale/clangtidy_generator/clang_visualizer.c:1061:32: warning: use 'fopen' mode 'e' to set O_CLOEXEC [android-cloexec-fopen]
+        html = fopen("clangtidy.html","w");
+                                      ^~~~
+                                      "we"
+/home/ahale/clangtidy_generator/clang_visualizer.c:1062:23: warning: use 'fopen' mode 'e' to set O_CLOEXEC [android-cloexec-fopen]
+        log = fopen(argv[1], "r"); 
+                             ^~~~
+                             "re"
+/home/ahale/clangtidy_generator/clang_visualizer.c:1094:45: warning: statement should be inside braces [hicpp-braces-around-statements]
+        for (int idx=0; idx < used_checks_amt; idx++)
+                                                   ^
+                                                    {
+/home/ahale/clangtidy_generator/clang_visualizer.c:1114:42: warning: statement should be inside braces [hicpp-braces-around-statements]
+                        if (strstr(log_line,checks_list[idx])) 
+                                                              ^
+                                                               {
+/home/ahale/clangtidy_generator/clang_visualizer.c:1133:4: warning: Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as 'strlcpy'. CWE-119 [clang-analyzer-security.insecureAPI.strcpy]
+                        strcpy(used_checks_list[new_checks_idx].name, checks_list[used_idx]);
+                        ^
+/home/ahale/clangtidy_generator/clang_visualizer.c:1133:4: note: Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as 'strlcpy'. CWE-119
+/home/ahale/clangtidy_generator/clang_visualizer.c:1145:31: warning: statement should be inside braces [readability-braces-around-statements]
+        if (used_checks_list == NULL) 
+                                     ^
+                                      {
+/home/ahale/clangtidy_generator/clang_visualizer.c:1155:25: warning: statement should be inside braces [readability-braces-around-statements]
+                if (check_details > 3)
+                                      ^
+                                       {
+/home/ahale/clangtidy_generator/clang_visualizer.c:1231:53: warning: statement should be inside braces [google-readability-braces-around-statements]
+        for (struct node *ptr = head; ptr; ptr = ptr->next)
+                                                           ^
+                                                            {
