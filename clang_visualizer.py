@@ -1,7 +1,6 @@
 import sys
 
 NUM_OF_CHECKS = 1000
-MAX_LENGTH = 512
 checks_list = ['[abseil-string-find-startswith]', \
 			'[android-cloexec-accept]', \
 			'[android-cloexec-accept4]', \
@@ -1023,53 +1022,59 @@ except IndexError:
 
 contents = f.readlines()
 
+# Increments each occurrence of a check.
 line = 0
 while line < len(contents):
-    for check_name in checks_list:
-        if contents[line].find(check_name) != -1:
-            checks_used[checks_list.index(check_name)] += 1
-    line+=1
+	contents[line] = contents[line].replace('<', '&lt;')
+	contents[line] = contents[line].replace('>', '&gt;')
+	for check_name in checks_list:
+		if contents[line].find(check_name) != -1:
+			checks_used[checks_list.index(check_name)] += 1
+	line+=1
 
-i = 0
+# Counts the max number of used checks in the log file.
+line = 0
 num_used_checks = 0
-while i < len(checks_list):
-    if checks_used[i] != 0:
+while line < len(checks_list):
+    if checks_used[line] != 0:
         num_used_checks += 1
-    i += 1
+    line += 1
 
 names_of_used = [None] * num_used_checks
 names_of_usedL = [None] * num_used_checks
 
-i = 0
-num = 0
-while i < len(checks_list):
-    if checks_used[i] != 0:      
-        new_node = checks(checks_list[i]) 
-        new_node.name = checks_list[i]
-        new_node.count = checks_used[i]
-        names_of_used[num] = new_node
+line = 0
+used_line = 0
+while line < len(checks_list):
+    if checks_used[line] != 0:      
+        new_node = checks(checks_list[line]) 
+        new_node.name = checks_list[line]
+        new_node.count = checks_used[line]
+        names_of_used[used_line] = new_node
 
-        names_of_usedL[num] = checks_list[i]
-        num += 1
-    i += 1
+        names_of_usedL[used_line] = checks_list[line]
+        used_line += 1
+    line += 1
 
-linez = 0
-while linez < len(contents):
-    for idx in names_of_usedL:
-        if contents[linez].find(idx) != -1:
-            names_of_used[names_of_usedL.index(idx)].data += contents[linez]
-            details = linez + 1
-            
-            # TODO: implement a better solution here
-            names_of_used[names_of_usedL.index(idx)].data += contents[details]
-            details += 1
-            names_of_used[names_of_usedL.index(idx)].data += contents[details]
-            details += 1
-            names_of_used[names_of_usedL.index(idx)].data += contents[details]
-            # details += 1
-            # names_of_used[names_of_usedL.index(idx)].data += contents[details]  
+line = 0
+while line < len(contents):
+	for initial_check in names_of_usedL:
+		if contents[line].find(initial_check) != -1:
+			names_of_used[names_of_usedL.index(initial_check)].data += contents[line]
+			details = line + 1
+			finished = False
+			while not finished:
+				if details >= len(contents)-1:
+					finished = True
 
-    linez+=1
+				for end_check in names_of_usedL:
+					if contents[details].find(end_check) != -1:
+						finished = True
+				
+				if not finished:
+					names_of_used[names_of_usedL.index(initial_check)].data += contents[details]
+					details += 1 
+	line+=1
 
 f = open("clang.html", "w")
 
@@ -1096,14 +1101,13 @@ f.write("\t\t\t<button type=\"button\" class=\"btn btn-info\" onclick=\"clearChe
 f.write("\t\t</div>\n\t</div><br>\n") 
 f.write("\t<ul id=\"list\" class=\"list-group\" align=\"left\" style=\"display: block; width: 25%; height: 0; margin-bottom: 0;\">\n")
 
-
 # Iterates through each used check's details and organizes them into the given <pre> sections.
 f.write("\t\t<a id=\"log\" href=\"#\" class=\"list-group-item list-group-item-success\" style=\"color: black; font-weight: bold; letter-spacing:0.4px;\" onclick=\"toggleLog()\">Original Log</a>\n")
 
-idx = 0
-while idx < num_used_checks:
-    f.write("\t\t<a id=\"check%d\" style=\"color: black\" href=\"#\" class=\"list-group-item list-group-item-action\" onclick=\"toggleInfo(%d)\">%d %s</a>\n" % (idx, idx, names_of_used[idx].count, names_of_used[idx].name))
-    idx += 1
+line = 0
+while line < num_used_checks:
+    f.write("\t\t<a id=\"check%d\" style=\"color: black\" href=\"#\" class=\"list-group-item list-group-item-action\" onclick=\"toggleInfo(%d)\">%d %s</a>\n" % (line, line, names_of_used[line].count, names_of_used[line].name))
+    line += 1
 
 f.write("\t</ul>\n\n")
 f.write("\t<div id=\"showLog\" style=\"display: none; width: 75%; float: right;\">\n")
@@ -1119,23 +1123,23 @@ f.write("\t\t\t<h4 style=\"margin-top: 0; color: #111; position: absolute; left:
 
 f.write("\t\t</div>\n\t\t<pre>\n")
 
-i = 0
-while i < len(contents):
-    f.write("%s" % (contents[i]))
-    i += 1
+line = 0
+while line < len(contents):
+    f.write("%s" % (contents[line]))
+    line += 1
 
 f.write("\n\t\t</pre>\n\t</div>\n")
 
-yee = 0
-while yee < num_used_checks:
-    collapse_idx = yee+1
-    f.write("\t<div id=\"show%d\"" % (yee))
+check_idx = 0
+while check_idx < num_used_checks:
+    collapse_idx = check_idx+1
+    f.write("\t<div id=\"show%d\"" % (check_idx))
     f.write("style=\"display: none; width: 75%; float: right\">\n")
     f.write("\t\t<div style=\"display: flex; justify-content: left; position: relative;\">\n")
     f.write("\t\t\t<button id=\"collapse-btn%d\" type=\"button\" class=\"btn nohover\" onclick=\"collapseSidebar()\" style=\"outline: none; background-color: lightgray\" title=\"Collapse sidebar\">\n" % (collapse_idx))
     f.write("\t\t\t<span id=\"collapse-img%d\" class=\"glyphicon glyphicon-menu-left\"></button></span>\n" % (collapse_idx))
     f.write("\t\t\t<h4 style=\"margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10\">")
-    f.write("%s</h4>\n" % (names_of_used[yee].name[1:-1]))
+    f.write("%s</h4>\n" % (names_of_used[check_idx].name[1:-1]))
     # if (has_external_link == 1) {
     #     f.write("\t\t\t<button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('%s','_blank')\"\n", external_link)
     #     f.write("\t\t\tstyle=\"outline: none; position: absolute color: #111 right: 0 background-color: rgb(181, 215, 247)\">\n")
@@ -1143,12 +1147,10 @@ while yee < num_used_checks:
     # }
     f.write("\t\t</div>\n\t\t<pre>\n")
     
-    f.write("%s\t\t</pre>\n\t</div>\n" % (names_of_used[yee].data))    	
-    yee += 1
-
+    f.write("%s\t\t</pre>\n\t</div>\n" % (names_of_used[check_idx].data))    	
+    check_idx += 1
 
 f.write("</div>\n</body>\n")
-
 
 # Writes Javascript and JQuery code to the html file for button and grouping functionalities.
 f.write("<script>\nvar selected_idx;\nvar checks_arr = [];\nvar highlights = 'highlights';\n")
