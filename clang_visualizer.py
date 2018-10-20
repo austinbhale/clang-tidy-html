@@ -1012,18 +1012,17 @@ class checks:
         self.data = ''
 
 def main():
-
-	# try:
-	# 	f = open(sys.argv[1], 'r')
-
-	# except IndexError:
-	# 	usage()
-	# 	sys.exit()
 		
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-b', '--button', action='store_true')
 	parser.add_argument('file', type=argparse.FileType('r'))
-	args = parser.parse_args()
+	
+	try:
+		args = parser.parse_args()
+	except:
+		# parser.print_help()
+		usage()
+		sys.exit()
 	
 	external_link = ''
 	external_name = ''
@@ -1102,8 +1101,9 @@ def usage():
 	print("**--------------------------- Clang Visualizer --------------------------**\n\n \
 	Generates an html file as a visual for clang-tidy checks.\n\n \
 	Arguments: python clang_visualizer.py [logfile.log]\n\n \
-	Options:\n\t\t'-b': External link button for the html page.\n \
-	\t\t-Prompts the user for a hyperlink and name. \
+	Options:\n\t\t'-b', '--button': External link button for the html page.\n \
+	\t\t-Prompts the user for a hyperlink and name.\n \
+	\t\t-ex: python clang_visualizer -b [logfile.log] \
 	\n\n**------------------------------------------------------------------------**")
 
 def writeHeader(f):
