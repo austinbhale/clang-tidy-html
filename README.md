@@ -32,6 +32,8 @@ Inside the same directory as clang_visualizer.py, you will find a new html file 
 
 An example html output can be found [here](https://austinbhale.com/Clang-Visualizer/examples/example.html).
 
+A separate example with the external link option as a button can be found [here](https://austinbhale.com/Clang-Visualizer/examples/example-with-button.html).
+
 The highlighting functionality uses your local session storage, which will save your changes on exit.
 
 ## Contributing
