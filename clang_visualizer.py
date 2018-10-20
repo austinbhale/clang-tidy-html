@@ -1017,7 +1017,12 @@ try:
     f = open(sys.argv[1], 'r')
 
 except IndexError:
-    print("usage is...")
+    print("**--------------------------- Clang Visualizer --------------------------**\n\n \
+	Generates an html file as a visual for clang-tidy checks.\n\n \
+	Arguments: python clang_visualizer.py [logfile.log]\n\n \
+	Options:\n\t\t'-b': External link button for the html page.\n \
+	\t\t-Prompts the user for a hyperlink and name. \
+	\n\n**------------------------------------------------------------------------**")
     sys.exit()
 
 contents = f.readlines()
@@ -1064,14 +1069,13 @@ while line < len(contents):
 			details = line + 1
 			finished = False
 			while not finished:
-				if details >= len(contents)-1:
+				if details >= len(contents):
 					finished = True
-
-				for end_check in names_of_usedL:
-					if contents[details].find(end_check) != -1:
-						finished = True
 				
 				if not finished:
+					for end_check in names_of_usedL:
+						if contents[details].find(end_check) != -1:
+							finished = True
 					names_of_used[names_of_usedL.index(initial_check)].data += contents[details]
 					details += 1 
 	line+=1
