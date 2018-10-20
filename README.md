@@ -10,7 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 Install [Clang-Tidy](http://clang.llvm.org/extra/clang-tidy/) to use for your C/C++ source files.
 
-You will need bash or some other terminal to execute the script. Download Python [here](https://www.python.org/downloads/).
+You will need bash or some other terminal to execute the script. Download Python 3 or higher [here](https://www.python.org/downloads/).
 
 When running clang-tidy on your files, be sure to pipe it into a new log file of checks:
 
@@ -38,7 +38,7 @@ The highlighting functionality uses your local session storage, which will save 
 
 ## Contributing
 
-Feel free to create a pull request for any improvements or fixes to this repository.
+Feel free to create a pull request for any updates or fixes to this repository.
 
 ## Versioning
 
@@ -52,4 +52,4 @@ See also the list of [contributors](https://github.com/austinbhale/Clang-Visuali
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
