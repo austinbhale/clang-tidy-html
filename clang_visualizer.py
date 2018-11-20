@@ -1031,7 +1031,7 @@ def main():
 		external_name = input("What would you like to name this link?\n")
 
 	contents = args.file.readlines()
-
+	checks_list.sort()
 	checks_used = [0] * 1000
 	# Increments each occurrence of a check.
 	line = 0
