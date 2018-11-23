@@ -13,7 +13,7 @@
 <body style="background: rgb(220, 227, 230); width: 100%; height: 100%;">
 <div id="container" style="margin-left: 2%; margin-right: 2%;">
 	<div id="header" style="height: 55px; display: flex; justify-content: left; position: relative;">
-		<h3 style="text-align: center; color: #111; font-family: 'Helvetica Neue', sans-serif; font-weight: bold; letter-spacing: 0.5px; line-height: 1;">Clang-Tidy Checks</h3>
+		<h3 style="text-align: center; color: #111; font-family: 'Helvetica Neue', sans-serif; font-weight: bold;     letter-spacing: 0.5px; line-height: 1;">Clang-Tidy Checks</h3>
 		<div class="btn-group" role="group" style="position: absolute; right: 0;">
 			<button type="button" class="btn btn-warning" onclick="highlightChecks(0)" style="outline: none; color: black">Warning</button>
 			<button type="button" class="btn btn-danger" onclick="highlightChecks(1)" style="outline: none; color: black">Danger</button>
@@ -21,27 +21,27 @@
 		</div>
 	</div><br>
 	<ul id="list" class="list-group" align="left" style="display: block; width: 25%; height: 0; margin-bottom: 0;">
-		<a id="log" href="#" class="list-group-item list-group-item-success" style="color: black; font-weight: bold; letter-spacing:0.4px;" onclick="toggleLog()">Original Log</a>
-		<a id="check0" style="color: black" href="#" class="list-group-item list-group-item-action" onclick="toggleInfo(0)">2 [android-cloexec-fopen]</a>
-		<a id="check1" style="color: black" href="#" class="list-group-item list-group-item-action" onclick="toggleInfo(1)">1 [google-readability-braces-around-statements]</a>
-		<a id="check2" style="color: black" href="#" class="list-group-item list-group-item-action" onclick="toggleInfo(2)">2 [hicpp-braces-around-statements]</a>
-		<a id="check3" style="color: black" href="#" class="list-group-item list-group-item-action" onclick="toggleInfo(3)">1 [llvm-include-order]</a>
-		<a id="check4" style="color: black" href="#" class="list-group-item list-group-item-action" onclick="toggleInfo(4)">2 [readability-braces-around-statements]</a>
-		<a id="check5" style="color: black" href="#" class="list-group-item list-group-item-action" onclick="toggleInfo(5)">1 [readability-inconsistent-declaration-parameter-name]</a>
-		<a id="check6" style="color: black" href="#" class="list-group-item list-group-item-action" onclick="toggleInfo(6)">1 [clang-analyzer-security.insecureAPI.strcpy]</a>
+		<a id="log" href="#" class="list-group-item list-group-item-success" style="color: black; font-weight: bold; letter-spacing:0.4px;"     onclick="toggleLog()">10 Original Log</a>
+		<a id="check0" style="color: black" href="#" class="list-group-item list-group-item-action"         onclick="toggleInfo(0)">2 [android-cloexec-fopen]</a>
+		<a id="check1" style="color: black" href="#" class="list-group-item list-group-item-action"         onclick="toggleInfo(1)">1 [clang-analyzer-security.insecureAPI.strcpy]</a>
+		<a id="check2" style="color: black" href="#" class="list-group-item list-group-item-action"         onclick="toggleInfo(2)">1 [google-readability-braces-around-statements]</a>
+		<a id="check3" style="color: black" href="#" class="list-group-item list-group-item-action"         onclick="toggleInfo(3)">2 [hicpp-braces-around-statements]</a>
+		<a id="check4" style="color: black" href="#" class="list-group-item list-group-item-action"         onclick="toggleInfo(4)">1 [llvm-include-order]</a>
+		<a id="check5" style="color: black" href="#" class="list-group-item list-group-item-action"         onclick="toggleInfo(5)">2 [readability-braces-around-statements]</a>
+		<a id="check6" style="color: black" href="#" class="list-group-item list-group-item-action"         onclick="toggleInfo(6)">1 [readability-inconsistent-declaration-parameter-name]</a>
 	</ul>
 
 	<div id="showLog" style="display: none; width: 75%; float: right;">
 		<div style="display: flex; justify-content: left; position: relative;">
-			<button id="collapse-btn0" type="button" class="btn nohover" onclick="collapseSidebar()" style="outline: none; background-color: lightgray" title="Collapse sidebar">
+			<button id="collapse-btn0" type="button" class="btn nohover" onclick="collapseSidebar()" style="outline: none;     background-color: lightgray" title="Collapse sidebar">
 			<span id="collapse-img0" class="glyphicon glyphicon-menu-left"></button></span>
 			<h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10;">Original Log</h4>
 		</div>
 		<pre>
 /home/ahale/clangtidy_generator/clang_visualizer.c:6:1: warning: #includes are not sorted properly [llvm-include-order]
-#include &lt;stdio.h&gt;
+#include <stdio.h>
 ^        ~~~~~~~~~
-         &lt;stddef.h&gt;
+         <stddef.h>
 /home/ahale/clangtidy_generator/clang_visualizer.c:27:6: warning: function 'read_log' has a definition with different parameter names [readability-inconsistent-declaration-parameter-name]
 void read_log(FILE *log, node_t *head, node_t **next, char line[]);
      ^                                                     ~~~~~
@@ -61,7 +61,7 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
                              ^~~~
                              "re"
 /home/ahale/clangtidy_generator/clang_visualizer.c:1094:45: warning: statement should be inside braces [hicpp-braces-around-statements]
-        for (int idx=0; idx &lt; used_checks_amt; idx++)
+        for (int idx=0; idx < used_checks_amt; idx++)
                                                    ^
                                                     {
 /home/ahale/clangtidy_generator/clang_visualizer.c:1114:42: warning: statement should be inside braces [hicpp-braces-around-statements]
@@ -77,11 +77,11 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
                                      ^
                                       {
 /home/ahale/clangtidy_generator/clang_visualizer.c:1155:25: warning: statement should be inside braces [readability-braces-around-statements]
-                if (check_details &gt; 3)
+                if (check_details > 3)
                                       ^
                                        {
 /home/ahale/clangtidy_generator/clang_visualizer.c:1231:53: warning: statement should be inside braces [google-readability-braces-around-statements]
-        for (struct node *ptr = head; ptr; ptr = ptr-&gt;next)
+        for (struct node *ptr = head; ptr; ptr = ptr->next)
                                                            ^
                                                             {
 
@@ -89,7 +89,7 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
 	</div>
 	<div id="show0"style="display: none; width: 75%; float: right">
 		<div style="display: flex; justify-content: left; position: relative;">
-			<button id="collapse-btn1" type="button" class="btn nohover" onclick="collapseSidebar()" style="outline: none; background-color: lightgray" title="Collapse sidebar">
+			<button id="collapse-btn1" type="button" class="btn nohover" onclick="collapseSidebar()"         style="outline: none; background-color: lightgray" title="Collapse sidebar">
 			<span id="collapse-img1" class="glyphicon glyphicon-menu-left"></button></span>
 			<h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10">android-cloexec-fopen</h4>
 		</div>
@@ -106,26 +106,39 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
 	</div>
 	<div id="show1"style="display: none; width: 75%; float: right">
 		<div style="display: flex; justify-content: left; position: relative;">
-			<button id="collapse-btn2" type="button" class="btn nohover" onclick="collapseSidebar()" style="outline: none; background-color: lightgray" title="Collapse sidebar">
+			<button id="collapse-btn2" type="button" class="btn nohover" onclick="collapseSidebar()"         style="outline: none; background-color: lightgray" title="Collapse sidebar">
 			<span id="collapse-img2" class="glyphicon glyphicon-menu-left"></button></span>
-			<h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10">google-readability-braces-around-statements</h4>
+			<h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10">clang-analyzer-security.insecureAPI.strcpy</h4>
 		</div>
 		<pre>
-/home/ahale/clangtidy_generator/clang_visualizer.c:1231:53: warning: statement should be inside braces [google-readability-braces-around-statements]
-        for (struct node *ptr = head; ptr; ptr = ptr-&gt;next)
-                                                           ^
-                                                            {
+/home/ahale/clangtidy_generator/clang_visualizer.c:1133:4: warning: Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as 'strlcpy'. CWE-119 [clang-analyzer-security.insecureAPI.strcpy]
+                        strcpy(used_checks_list[new_checks_idx].name, checks_list[used_idx]);
+                        ^
+/home/ahale/clangtidy_generator/clang_visualizer.c:1133:4: note: Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as 'strlcpy'. CWE-119
 		</pre>
 	</div>
 	<div id="show2"style="display: none; width: 75%; float: right">
 		<div style="display: flex; justify-content: left; position: relative;">
-			<button id="collapse-btn3" type="button" class="btn nohover" onclick="collapseSidebar()" style="outline: none; background-color: lightgray" title="Collapse sidebar">
+			<button id="collapse-btn3" type="button" class="btn nohover" onclick="collapseSidebar()"         style="outline: none; background-color: lightgray" title="Collapse sidebar">
 			<span id="collapse-img3" class="glyphicon glyphicon-menu-left"></button></span>
+			<h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10">google-readability-braces-around-statements</h4>
+		</div>
+		<pre>
+/home/ahale/clangtidy_generator/clang_visualizer.c:1231:53: warning: statement should be inside braces [google-readability-braces-around-statements]
+        for (struct node *ptr = head; ptr; ptr = ptr->next)
+                                                           ^
+                                                            {
+		</pre>
+	</div>
+	<div id="show3"style="display: none; width: 75%; float: right">
+		<div style="display: flex; justify-content: left; position: relative;">
+			<button id="collapse-btn4" type="button" class="btn nohover" onclick="collapseSidebar()"         style="outline: none; background-color: lightgray" title="Collapse sidebar">
+			<span id="collapse-img4" class="glyphicon glyphicon-menu-left"></button></span>
 			<h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10">hicpp-braces-around-statements</h4>
 		</div>
 		<pre>
 /home/ahale/clangtidy_generator/clang_visualizer.c:1094:45: warning: statement should be inside braces [hicpp-braces-around-statements]
-        for (int idx=0; idx &lt; used_checks_amt; idx++)
+        for (int idx=0; idx < used_checks_amt; idx++)
                                                    ^
                                                     {
 /home/ahale/clangtidy_generator/clang_visualizer.c:1114:42: warning: statement should be inside braces [hicpp-braces-around-statements]
@@ -134,23 +147,23 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
                                                                {
 		</pre>
 	</div>
-	<div id="show3"style="display: none; width: 75%; float: right">
+	<div id="show4"style="display: none; width: 75%; float: right">
 		<div style="display: flex; justify-content: left; position: relative;">
-			<button id="collapse-btn4" type="button" class="btn nohover" onclick="collapseSidebar()" style="outline: none; background-color: lightgray" title="Collapse sidebar">
-			<span id="collapse-img4" class="glyphicon glyphicon-menu-left"></button></span>
+			<button id="collapse-btn5" type="button" class="btn nohover" onclick="collapseSidebar()"         style="outline: none; background-color: lightgray" title="Collapse sidebar">
+			<span id="collapse-img5" class="glyphicon glyphicon-menu-left"></button></span>
 			<h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10">llvm-include-order</h4>
 		</div>
 		<pre>
 /home/ahale/clangtidy_generator/clang_visualizer.c:6:1: warning: #includes are not sorted properly [llvm-include-order]
-#include &lt;stdio.h&gt;
+#include <stdio.h>
 ^        ~~~~~~~~~
-         &lt;stddef.h&gt;
+         <stddef.h>
 		</pre>
 	</div>
-	<div id="show4"style="display: none; width: 75%; float: right">
+	<div id="show5"style="display: none; width: 75%; float: right">
 		<div style="display: flex; justify-content: left; position: relative;">
-			<button id="collapse-btn5" type="button" class="btn nohover" onclick="collapseSidebar()" style="outline: none; background-color: lightgray" title="Collapse sidebar">
-			<span id="collapse-img5" class="glyphicon glyphicon-menu-left"></button></span>
+			<button id="collapse-btn6" type="button" class="btn nohover" onclick="collapseSidebar()"         style="outline: none; background-color: lightgray" title="Collapse sidebar">
+			<span id="collapse-img6" class="glyphicon glyphicon-menu-left"></button></span>
 			<h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10">readability-braces-around-statements</h4>
 		</div>
 		<pre>
@@ -159,15 +172,15 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
                                      ^
                                       {
 /home/ahale/clangtidy_generator/clang_visualizer.c:1155:25: warning: statement should be inside braces [readability-braces-around-statements]
-                if (check_details &gt; 3)
+                if (check_details > 3)
                                       ^
                                        {
 		</pre>
 	</div>
-	<div id="show5"style="display: none; width: 75%; float: right">
+	<div id="show6"style="display: none; width: 75%; float: right">
 		<div style="display: flex; justify-content: left; position: relative;">
-			<button id="collapse-btn6" type="button" class="btn nohover" onclick="collapseSidebar()" style="outline: none; background-color: lightgray" title="Collapse sidebar">
-			<span id="collapse-img6" class="glyphicon glyphicon-menu-left"></button></span>
+			<button id="collapse-btn7" type="button" class="btn nohover" onclick="collapseSidebar()"         style="outline: none; background-color: lightgray" title="Collapse sidebar">
+			<span id="collapse-img7" class="glyphicon glyphicon-menu-left"></button></span>
 			<h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10">readability-inconsistent-declaration-parameter-name</h4>
 		</div>
 		<pre>
@@ -181,19 +194,6 @@ void read_log(FILE *log, node_t *head, node_t **next, char log_line[])
 /home/ahale/clangtidy_generator/clang_visualizer.c:27:6: note: differing parameters are named here: ('line'), in definition: ('log_line')
 void read_log(FILE *log, node_t *head, node_t **next, char line[]);
      ^
-		</pre>
-	</div>
-	<div id="show6"style="display: none; width: 75%; float: right">
-		<div style="display: flex; justify-content: left; position: relative;">
-			<button id="collapse-btn7" type="button" class="btn nohover" onclick="collapseSidebar()" style="outline: none; background-color: lightgray" title="Collapse sidebar">
-			<span id="collapse-img7" class="glyphicon glyphicon-menu-left"></button></span>
-			<h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10">clang-analyzer-security.insecureAPI.strcpy</h4>
-		</div>
-		<pre>
-/home/ahale/clangtidy_generator/clang_visualizer.c:1133:4: warning: Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as 'strlcpy'. CWE-119 [clang-analyzer-security.insecureAPI.strcpy]
-                        strcpy(used_checks_list[new_checks_idx].name, checks_list[used_idx]);
-                        ^
-/home/ahale/clangtidy_generator/clang_visualizer.c:1133:4: note: Call to function 'strcpy' is insecure as it does not provide bounding of the memory buffer. Replace unbounded copy functions with analogous functions that support length arguments such as 'strlcpy'. CWE-119
 		</pre>
 	</div>
 </div>
