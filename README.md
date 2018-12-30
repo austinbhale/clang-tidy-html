@@ -10,6 +10,12 @@ These instructions will get you a copy of the project up and running on your loc
 
 Install [Clang-Tidy](http://clang.llvm.org/extra/clang-tidy/) to use for your C/C++ source files.
 
+On your local Linux machine, installation is as easy as:
+
+```
+sudo apt install clang-tidy
+```
+
 You will need bash or some other terminal to execute the script. Download Python 3 or higher [here](https://www.python.org/downloads/).
 
 When running clang-tidy on your files, be sure to pipe it into a new log file of checks:
@@ -17,6 +23,13 @@ When running clang-tidy on your files, be sure to pipe it into a new log file of
 ```
 clang-tidy -checks=* [filename.c] | tee [newfile.log]
 ```
+
+If you are receiving the following error:
+
+> Error while trying to load a compilation database:
+> Could not auto-detect compilation database for file "your_file.c"
+> No compilation database found in /your/directory or any parent directory
+> Create a simple json file to be compiled into your project documented [here](http://clang.llvm.org/docs/JSONCompilationDatabase.html).
 
 ## Running the script
 
@@ -46,7 +59,7 @@ This repository uses [LLVM Clang](http://clang.llvm.org/extra/clang-tidy/index.h
 
 ## Authors
 
-* **Austin Hale**
+- **Austin Hale**
 
 See also the list of [contributors](https://github.com/austinbhale/Clang-Visualizer/graphs/contributors) who participated in this project.
 
