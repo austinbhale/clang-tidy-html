@@ -6,6 +6,11 @@ A visualizer for LLVM's linting tool: clang-tidy.
 
 These instructions will get you a copy of the project up and running on your local machine.
 
+### Libraries
+- [argparse](https://pypi.org/project/argparse/)
+- [urllib.request](https://docs.python.org/3/library/urllib.request.html)
+- [BeautifulSoup](https://pypi.org/project/beautifulsoup4/)
+
 ### Prerequisites
 
 Install [Clang-Tidy](http://clang.llvm.org/extra/clang-tidy/) to use for your C/C++ source files.
