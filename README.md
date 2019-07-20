@@ -10,6 +10,7 @@ These instructions will get you a copy of the project up and running on your loc
 - [argparse](https://pypi.org/project/argparse/)
 - [urllib.request](https://docs.python.org/3/library/urllib.request.html)
 - [BeautifulSoup](https://pypi.org/project/beautifulsoup4/)
+- [lxml](https://lxml.de/installation.html)
 
 ### Prerequisites
 
@@ -61,7 +62,7 @@ Feel free to create a pull request for any updates or fixes to this repository.
 
 ## Versioning
 
-This repository uses [LLVM Clang](http://clang.llvm.org/extra/clang-tidy/index.html) for versioning. All checks confirmed for version 6.0-8.0. Earlier versions should have support for the vast majority of checks.
+This repository uses [LLVM Clang](http://clang.llvm.org/extra/clang-tidy/index.html) for versioning. All checks confirmed for version 6.0-10.0+. Earlier versions should have support for the vast majority of checks. Later versions update based on the information presented on LLVM's official [checks list](http://clang.llvm.org/extra/clang-tidy/checks/list.html).
 
 ## Authors
 
