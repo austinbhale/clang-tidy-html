@@ -29,7 +29,8 @@ If you are receiving the following error:
 > Error while trying to load a compilation database:
 > Could not auto-detect compilation database for file "your_file.c"
 > No compilation database found in /your/directory or any parent directory
-> Create a simple json file to be compiled into your project documented [here](http://clang.llvm.org/docs/JSONCompilationDatabase.html).
+
+Create a simple json file to be compiled into your project documented [here](http://clang.llvm.org/docs/JSONCompilationDatabase.html).
 
 ## Running the script
 
@@ -38,7 +39,7 @@ Clone or fork this repository to run the script on your native system.
 The script takes in one file argument of a txt or log file with your outputted clang-tidy checks.
 
 ```
-python clang_visualizer.py [newfile.log]
+python3 clang_visualizer.py [newfile.log]
 ```
 
 Inside the same directory as clang_visualizer.py, you will find a new html file called 'clang.html'.
