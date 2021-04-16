@@ -1,16 +1,16 @@
-# Clang-Visualizer
+# clang-html
 
 A visualizer for LLVM's linting tool: clang-tidy.
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine.
+## Getting Started with pip
+```
+python -m pip install clang-html
+python -m clang-html [logfile.log]
+```
 
 ### Libraries
 - [argparse](https://pypi.org/project/argparse/)
-- [urllib.request](https://docs.python.org/3/library/urllib.request.html)
 - [BeautifulSoup](https://pypi.org/project/beautifulsoup4/)
-- [lxml](https://lxml.de/installation.html)
 
 ### Prerequisites
 
@@ -38,14 +38,14 @@ If you are receiving the following error:
 
 Create a simple json file to be compiled into your project documented [here](http://clang.llvm.org/docs/JSONCompilationDatabase.html).
 
-## Running the script
+## Running the script locally
 
 Clone or fork this repository to run the script on your native system.
 
 The script takes in one file argument of a txt or log file with your outputted clang-tidy checks.
 
 ```
-python3 clang_visualizer.py [newfile.log]
+python -m clang-html [newfile.log]
 ```
 
 Inside the same directory as clang_visualizer.py, you will find a new html file called 'clang.html'.

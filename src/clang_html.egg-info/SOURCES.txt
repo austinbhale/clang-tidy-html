@@ -1,0 +1,12 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+setup.py
+src/clang-html/__init__.py
+src/clang-html/__main__.py
+src/clang_html.egg-info/PKG-INFO
+src/clang_html.egg-info/SOURCES.txt
+src/clang_html.egg-info/dependency_links.txt
+src/clang_html.egg-info/requires.txt
+src/clang_html.egg-info/top_level.txt
