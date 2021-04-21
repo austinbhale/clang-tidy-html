@@ -152,17 +152,18 @@ def parse_command_line_options():
 # Prints usage information for the script.
 def usage():
     print("""
-***------------------------------------- Clang Visualizer ------------------------------------***
+***------------------------------------------ Clang HTML Visualizer -----------------------------------------***
 
-Generates an html file as a visual for clang-tidy checks.
+    Generates an html file as a visual for clang-tidy checks. Additionally, it writes a checks.py file that
+    informs you which checks have been scraped from http://clang.llvm.org/extra/clang-tidy/checks/list.html
 
-Arguments: python clang_visualizer.py [logfile.log]
+    Arguments: python -m clang-html [logfile.log]
 
-Options:
-    '-b', '--button': External link button for the html page. Asks for a hyperlink and name.
-        -ex: python clang_visualizer -b [logfile.log]
+    Options:
+        '-b', '--button': External link button for the html page. Asks for a hyperlink and name.
+            -ex: python -m clang-html -b [logfile.log]
     
-***--------------------------------------------------------------------------------------------***""")
+***----------------------------------------------------------------------------------------------------------***""")
 
 # Header of the clang.html file.
 def writeHeader(f):

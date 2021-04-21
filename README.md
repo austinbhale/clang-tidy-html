@@ -45,6 +45,7 @@ Clone or fork this repository to run the script on your native system.
 The script takes in one file argument of a txt or log file with your outputted clang-tidy checks.
 
 ```
+cd src/
 python -m clang-html [newfile.log]
 ```
 

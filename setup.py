@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name='clang-html',
-    version='1.3.2',    
+    version='1.3.3',    
     description='Generates an html file that organizes your clang-tidy log output with the latest clang-tidy checks.',
     long_description=long_description,
     long_description_content_type="text/markdown",
