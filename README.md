@@ -9,7 +9,7 @@ python -m clang_html [logfile.log]
 ```
 
 ### Libraries
-- [argparse](https://pypi.org/project/argparse/)
+- [lxml](https://pypi.org/project/lxml/)
 - [BeautifulSoup](https://pypi.org/project/beautifulsoup4/)
 
 ### Prerequisites
