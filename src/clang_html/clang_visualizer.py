@@ -159,11 +159,11 @@ def usage():
     Generates an html file as a visual for clang-tidy checks. Additionally, it writes a checks.py file that
     informs you which checks have been scraped from http://clang.llvm.org/extra/clang-tidy/checks/list.html
 
-    Arguments: python -m clang-html [logfile.log]
+    Arguments: python -m clang_html [logfile.log]
 
     Options:
         '-b', '--button': External link button for the html page. Asks for a hyperlink and name.
-            -ex: python -m clang-html -b [logfile.log]
+            -ex: python -m clang_html -b [logfile.log]
 
 ***----------------------------------------------------------------------------------------------------------***""")
 
