@@ -1,8 +1,11 @@
-import sys
 import argparse
-import urllib.request
 import re
+import sys
+import urllib.request
+from typing import List
+
 from bs4 import BeautifulSoup
+
 # You can also import custom clang checks from checks.py below.
 # from checks import checks_list
 
@@ -13,28 +16,47 @@ class checks:
         self.count = 0
         self.data = ''
 
+
 # Begin here.
 def main():
-    find_checks_list()
-    checks_list.sort()
-
-    # Updates the newest clang-tidy checks to your checks.py file.
-    write_checks_file()
-
     # Process command line arguments.
-    args = parse_command_line_options()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-b', '--button', action='store_true')
+    parser.add_argument('file', type=argparse.FileType('r'))
+
+    try:
+        args = parser.parse_args()
+    except:
+        parser.print_help()
+        usage()
+        sys.exit(-1)
+
     external_link = ''
     external_name = ''
     if (args.button):
         external_link = input("What is the full link address?\n")
         external_name = input("What would you like to name the button to this link?\n")
 
-    contents = args.file.readlines()
+    tidy_log_lines = args.file.readlines()
+    button = args.button
+    clang_tidy_visualizer(tidy_log_lines, args.button,
+                          external_link, external_name)
+
+
+def clang_tidy_visualizer(tidy_log_lines: List[str],
+                          button: bool,
+                          external_link: str,
+                          external_name: str):
+    checks_list = find_checks_list()
+    checks_list.sort()
+
+    # Updates the newest clang-tidy checks to your checks.py file.
+    write_checks_file(checks_list)
 
     checks_used = [0] * len(checks_list)
 
     # Increments each occurrence of a check.
-    for line, content in enumerate(contents):
+    for line, content in enumerate(tidy_log_lines):
         content = content.replace('<', '&lt;')
         content = content.replace('>', '&gt;')
         for check_name in checks_list:
@@ -65,7 +87,7 @@ def main():
             used_line += 1
 
     # Adds details for each organized check.
-    for line, content in enumerate(contents):
+    for line, content in enumerate(tidy_log_lines):
         # Goes through each used check.
         for initial_check in names_of_usedL:
             # Adds the lines that detail the warning message.
@@ -78,35 +100,30 @@ def main():
                 finished = False
                 while not finished:
                     # Ensure there is no overflow.
-                    if details >= len(contents):
+                    if details >= len(tidy_log_lines):
                         break
                     # If the line includes a used Clang-Tidy check name,
                     # continue to find the next.
                     for end_check in names_of_usedL:
-                        if contents[details].find(end_check) != -1:
+                        if tidy_log_lines[details].find(end_check) != -1:
                             finished = True
                             break
                     # Otherwise, add the data to the specific used check
                     # name for the organization of checks in the HTML file.
                     if not finished:
                         names_of_used[names_of_usedL.index(
-                            initial_check)].data += contents[details]
+                            initial_check)].data += tidy_log_lines[details]
                         details += 1
 
-    args.file.close()
-    f = open("clang.html", "w")
-    
-    # Functions for writing to the clang.html file.
-    writeHeader(f)
-    writeList(f, num_used_checks, names_of_used, args,
-              external_link, external_name, total_num_checks)
-    sortLogs(f, contents, num_used_checks, names_of_used,
-             args, external_link, external_name)
-    writeScript(f, num_used_checks)
+    with open("clang.html", "w") as clang_html:
+        # Functions for writing to the clang.html file.
+        writeHeader(clang_html)
+        writeList(clang_html, num_used_checks, names_of_used, button,
+                  external_link, external_name, total_num_checks)
+        sortLogs(clang_html, tidy_log_lines, num_used_checks, names_of_used,
+                 button, external_link, external_name)
+        writeScript(clang_html, num_used_checks)
 
-    # Close the file.
-    f.close()
-    sys.exit()
 
 # Scrape data from clang-tidy's official list of current checks.
 def find_checks_list():
@@ -120,11 +137,11 @@ def find_checks_list():
         if check:
             scrape_checks_list.append("[" + check.group(1) + "]")
 
-    global checks_list
     checks_list = list(dict.fromkeys(scrape_checks_list))
+    return checks_list
 
 # Optional: Update the checks.py file with the most recent checks.
-def write_checks_file():
+def write_checks_file(checks_list):
     with open('checks.py', 'w') as f:
         f.write('checks_list = [')
         for check, item in enumerate(checks_list):
@@ -133,21 +150,6 @@ def write_checks_file():
             else:
                 f.write("'{}',".format(item))
 
-# Parses through the given command line options (-b, --button)
-# and returns the given file's contents if read successfully.
-def parse_command_line_options():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-b', '--button', action='store_true')
-    parser.add_argument('file', type=argparse.FileType('r'))
-
-    try:
-        args = parser.parse_args()
-    except:
-        parser.print_help()
-        usage()
-        sys.exit()
-
-    return args
 
 # Prints usage information for the script.
 def usage():
@@ -162,7 +164,7 @@ def usage():
     Options:
         '-b', '--button': External link button for the html page. Asks for a hyperlink and name.
             -ex: python -m clang-html -b [logfile.log]
-    
+
 ***----------------------------------------------------------------------------------------------------------***""")
 
 # Header of the clang.html file.
@@ -183,7 +185,7 @@ def writeHeader(f):
 """)
 
 # List the used checks found in the source code.
-def writeList(f, num_used_checks, names_of_used, args, external_link, external_name, total_num_checks):
+def writeList(f, num_used_checks, names_of_used, button, external_link, external_name, total_num_checks):
     f.write("""
 <body style="background: rgb(220, 227, 230); width: 100%; height: 100%;">
     <div id="container" style="margin-left: 2%; margin-right: 2%;">
@@ -215,7 +217,7 @@ def writeList(f, num_used_checks, names_of_used, args, external_link, external_n
 
     f.write("""
         </ul>
-        
+
         <div id="showLog" style="display: none; width: 75%; float: right;">
             <div style="display: flex; justify-content: left; position: relative;">
                 <button id="collapse-btn0" type="button" class="btn nohover" onclick="collapseSidebar()" style="outline: none; background-color: lightgray" title="Collapse sidebar">
@@ -224,11 +226,11 @@ def writeList(f, num_used_checks, names_of_used, args, external_link, external_n
 """)
 
     # Insert the user-specified link for the button argument. Link opens in a new tab.
-    if (args.button):
+    if (button):
         f.write("""
                 <button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('{}','_blank')\"
                             style=\"outline: none; position: absolute; color: #111; right: 0; background-color: rgb(181, 215, 247)\">
-                    {} 
+                    {}
                     <span class=\"glyphicon glyphicon-new-window\">
                 </button></span>
 """.format(external_link, external_name))
@@ -239,8 +241,8 @@ def writeList(f, num_used_checks, names_of_used, args, external_link, external_n
 """)
 
 # Sort through the used check logs for outputting the html.
-def sortLogs(f, contents, num_used_checks, names_of_used, args, external_link, external_name):
-    for line in contents:
+def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, button, external_link, external_name):
+    for line in tidy_log_lines:
         line = line.replace('<', '&lt;')
         line = line.replace('>', '&gt;')
         f.write("{}".format(line))
@@ -263,11 +265,11 @@ def sortLogs(f, contents, num_used_checks, names_of_used, args, external_link, e
                 </h4>
 """.format(check_idx, collapse_idx, names_of_used[check_idx].name[1:-1]))
 
-        if (args.button):
+        if (button):
             f.write("""
                 <button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('{}','_blank')\"
                         style=\"outline: none; position: absolute; color: #111; right: 0; background-color: rgb(181, 215, 247)\">
-                    {} 
+                    {}
                     <span class=\"glyphicon glyphicon-new-window\">
                 </button></span>
 """.format(external_link, external_name))
