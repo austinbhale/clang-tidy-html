@@ -14,7 +14,6 @@ setuptools.setup(
     author_email='ah@unc.edu',
     license='MIT License',
     install_requires=[
-        "argparse",
         "beautifulsoup4",
         "lxml",
     ],
