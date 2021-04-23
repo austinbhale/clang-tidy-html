@@ -1,11 +1,13 @@
-import setuptools
+# Always prefer setuptools over distutils
+from setuptools import setup, find_packages
+import pathlib
 
-with open("README.md", "r", encoding="utf-8") as fh:
-    long_description = fh.read()
+here = pathlib.Path(__file__).parent.resolve()
+long_description = (here / 'README.md').read_text(encoding='utf-8')
 
-setuptools.setup(
+setup(
     name='clang-html',
-    version='1.3.5',    
+    version='1.3.5',
     description='Generates an html file that organizes your clang-tidy log output with the latest clang-tidy checks.',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -22,6 +24,12 @@ setuptools.setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent'
     ],
-    package_dir={"": "src"},
-    packages=setuptools.find_packages(where="src")
+    keywords='clang, clang-tidy, html',
+    entry_points={
+        'console_scripts': [
+            'clang-tidy-html=clang_html.clang_visualizer:main',
+        ],
+    },
+    python_requires='>=3.6, <4',
+    packages=find_packages()
 )
