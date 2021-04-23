@@ -53,8 +53,6 @@ Inside the same directory as clang_visualizer.py, you will find a new html file 
 
 An example html output can be found [here](https://austinbhale.com/Clang-Visualizer/examples/clang.html).
 
-A separate example with the external link option as a button can be found [here](https://austinbhale.com/Clang-Visualizer/examples/clang_with_button.html).
-
 The highlighting functionality uses your local session storage, which will save your changes on exit.
 
 ## Contributing
@@ -73,4 +71,4 @@ See also the list of [contributors](https://github.com/austinbhale/Clang-Visuali
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/austinbhale/Clang-Visualizer/LICENSE) file for details.

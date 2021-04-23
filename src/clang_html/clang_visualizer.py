@@ -21,7 +21,6 @@ class checks:
 def main():
     # Process command line arguments.
     parser = argparse.ArgumentParser()
-    parser.add_argument('-b', '--button', action='store_true')
     parser.add_argument('file', type=argparse.FileType('r'))
 
     try:
@@ -31,23 +30,14 @@ def main():
         usage()
         sys.exit(-1)
 
-    external_link = ''
-    external_name = ''
-    if (args.button):
-        external_link = input("What is the full link address?\n")
-        external_name = input("What would you like to name the button to this link?\n")
-
     tidy_log_lines = args.file.readlines()
-    button = args.button
-    clang_tidy_visualizer(tidy_log_lines, args.button,
-                          external_link, external_name)
+    clang_tidy_visualizer(tidy_log_lines)
 
 
-def clang_tidy_visualizer(tidy_log_lines: List[str],
-                          button: bool,
-                          external_link: str,
-                          external_name: str):
-    checks_list = find_checks_list()
+def clang_tidy_visualizer(tidy_log_lines: List[str]):
+    
+    clang_base_url = "https://clang.llvm.org/extra/clang-tidy/checks/"
+    checks_list = find_checks_list(clang_base_url)
     checks_list.sort()
 
     # Updates the newest clang-tidy checks to your checks.py file.
@@ -118,16 +108,14 @@ def clang_tidy_visualizer(tidy_log_lines: List[str],
     with open("clang.html", "w") as clang_html:
         # Functions for writing to the clang.html file.
         writeHeader(clang_html)
-        writeList(clang_html, num_used_checks, names_of_used, button,
-                  external_link, external_name, total_num_checks)
-        sortLogs(clang_html, tidy_log_lines, num_used_checks, names_of_used,
-                 button, external_link, external_name)
+        writeList(clang_html, num_used_checks, names_of_used, clang_base_url, total_num_checks)
+        sortLogs(clang_html, tidy_log_lines, num_used_checks, names_of_used, clang_base_url)
         writeScript(clang_html, num_used_checks)
 
 
 # Scrape data from clang-tidy's official list of current checks.
-def find_checks_list():
-    url = 'http://clang.llvm.org/extra/clang-tidy/checks/list.html'
+def find_checks_list(clang_base_url: str):
+    url = clang_base_url + 'list.html'
     resp = urllib.request.urlopen(url)
     soup = BeautifulSoup(resp, "lxml")
 
@@ -161,10 +149,6 @@ def usage():
 
     Arguments: python -m clang_html [logfile.log]
 
-    Options:
-        '-b', '--button': External link button for the html page. Asks for a hyperlink and name.
-            -ex: python -m clang_html -b [logfile.log]
-
 ***----------------------------------------------------------------------------------------------------------***""")
 
 # Header of the clang.html file.
@@ -185,7 +169,7 @@ def writeHeader(f):
 """)
 
 # List the used checks found in the source code.
-def writeList(f, num_used_checks, names_of_used, button, external_link, external_name, total_num_checks):
+def writeList(f, num_used_checks, names_of_used, clang_base_url, total_num_checks):
     f.write("""
 <body style="background: rgb(220, 227, 230); width: 100%; height: 100%;">
     <div id="container" style="margin-left: 2%; margin-right: 2%;">
@@ -225,15 +209,16 @@ def writeList(f, num_used_checks, names_of_used, button, external_link, external
                 <h4 style="margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10;">Original Log</h4>
 """)
 
-    # Insert the user-specified link for the button argument. Link opens in a new tab.
-    if (button):
-        f.write("""
+    # Attach a button to the list of all checks in clang. Link opens in a new tab.
+    clang_check_url = clang_base_url + 'list.html'
+    external_name = 'Clang-Tidy Checks'
+    f.write("""
                 <button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('{}','_blank')\"
                             style=\"outline: none; position: absolute; color: #111; right: 0; background-color: rgb(181, 215, 247)\">
                     {}
                     <span class=\"glyphicon glyphicon-new-window\">
                 </button></span>
-""".format(external_link, external_name))
+""".format(clang_check_url, external_name))
 
     f.write("""
             </div>
@@ -241,7 +226,7 @@ def writeList(f, num_used_checks, names_of_used, button, external_link, external
 """)
 
 # Sort through the used check logs for outputting the html.
-def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, button, external_link, external_name):
+def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
     for line in tidy_log_lines:
         line = line.replace('<', '&lt;')
         line = line.replace('>', '&gt;')
@@ -265,14 +250,17 @@ def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, button, external
                 </h4>
 """.format(check_idx, collapse_idx, names_of_used[check_idx].name[1:-1]))
 
-        if (button):
-            f.write("""
-                <button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('{}','_blank')\"
-                        style=\"outline: none; position: absolute; color: #111; right: 0; background-color: rgb(181, 215, 247)\">
-                    {}
-                    <span class=\"glyphicon glyphicon-new-window\">
-                </button></span>
-""".format(external_link, external_name))
+        # Attach a button to the specific check's docs in clang. Link opens in a new tab.
+        stripped_check_name = names_of_used[check_idx].name[1:len(names_of_used[check_idx].name)-1]
+        clang_check_url = clang_base_url + stripped_check_name + '.html'
+        external_name = 'Documentation'
+        f.write("""
+                    <button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('{}','_blank')\"
+                                style=\"outline: none; position: absolute; color: #111; right: 0; background-color: rgb(181, 215, 247)\">
+                        {}
+                        <span class=\"glyphicon glyphicon-new-window\">
+                    </button></span>
+    """.format(clang_check_url, external_name))
 
         f.write("""
             </div>
