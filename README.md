@@ -3,9 +3,27 @@
 A visualizer for LLVM's linting tool: clang-tidy.
 
 ## Getting Started with pip
+Install it
 ```
 python -m pip install clang-html
+```
+In your shell:
+```
+
+# Call it as python module
 python -m clang_html [logfile.log]
+
+# Call it directly
+clang-tidy-html [logfile.log]
+```
+
+In your python terminal:
+```
+>>> from pathlib import Path
+>>> from clang_html import clang_tidy_visualizer
+
+>>> clang_tidy_visualizer(Path("examples/sample.log"))
+2021-04-23 12:30:40,619 - clang_html.clang_visualizer -     INFO - Writing results to clang.html
 ```
 
 ### Libraries

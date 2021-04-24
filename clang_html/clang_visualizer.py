@@ -1,10 +1,19 @@
 import argparse
+import logging
 import re
 import sys
 import urllib.request
+from pathlib import Path
 from typing import List
 
 from bs4 import BeautifulSoup
+
+log = logging.getLogger(__name__)
+handler = logging.StreamHandler()
+log_format = '%(asctime)s - %(name)12s - %(levelname)8s - %(message)s'
+handler.setFormatter(logging.Formatter(log_format))
+log.addHandler(handler)
+log.setLevel(logging.DEBUG)
 
 # You can also import custom clang checks from checks.py below.
 # from checks import checks_list
@@ -21,7 +30,7 @@ class checks:
 def main():
     # Process command line arguments.
     parser = argparse.ArgumentParser()
-    parser.add_argument('file', type=argparse.FileType('r'))
+    parser.add_argument('file', type=Path)
 
     try:
         args = parser.parse_args()
@@ -30,18 +39,19 @@ def main():
         usage()
         sys.exit(-1)
 
-    tidy_log_lines = args.file.readlines()
+    tidy_log_lines: Path = args.file
     clang_tidy_visualizer(tidy_log_lines)
 
 
-def clang_tidy_visualizer(tidy_log_lines: List[str]):
-    
+def clang_tidy_visualizer(tidy_log_file: Path,
+                          output_html_file: Path = Path("clang.html")):
+    tidy_log_lines = tidy_log_file.read_text().splitlines()
     clang_base_url = "https://clang.llvm.org/extra/clang-tidy/checks/"
     checks_list = find_checks_list(clang_base_url)
     checks_list.sort()
 
     # Updates the newest clang-tidy checks to your checks.py file.
-    write_checks_file(checks_list)
+    write_checks_file(checks_list, to_file=output_html_file.parent / "clang-tidy-checks.py")
 
     checks_used = [0] * len(checks_list)
 
@@ -105,7 +115,8 @@ def clang_tidy_visualizer(tidy_log_lines: List[str]):
                             initial_check)].data += tidy_log_lines[details]
                         details += 1
 
-    with open("clang.html", "w") as clang_html:
+    with open(output_html_file, "w") as clang_html:
+        log.info(f"Writing results to {output_html_file}")
         # Functions for writing to the clang.html file.
         writeHeader(clang_html)
         writeList(clang_html, num_used_checks, names_of_used, clang_base_url, total_num_checks)
@@ -129,8 +140,8 @@ def find_checks_list(clang_base_url: str):
     return checks_list
 
 # Optional: Update the checks.py file with the most recent checks.
-def write_checks_file(checks_list):
-    with open('checks.py', 'w') as f:
+def write_checks_file(checks_list, to_file):
+    with open(to_file, 'w') as f:
         f.write('checks_list = [')
         for check, item in enumerate(checks_list):
             if check == len(checks_list) - 1:
