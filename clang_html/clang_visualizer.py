@@ -289,8 +289,7 @@ def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
         names_of_used[check_idx].data = names_of_used[check_idx].data.replace('<', '&lt;')
         names_of_used[check_idx].data = names_of_used[check_idx].data.replace('>', '&gt;')
 
-        f.write("""
-{}
+        f.write("""{}
             </pre>
         </div>
 """.format(names_of_used[check_idx].data))
