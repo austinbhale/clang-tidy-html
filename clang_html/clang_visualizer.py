@@ -95,7 +95,7 @@ def clang_tidy_visualizer(tidy_log_file: Path,
                 content = content.replace('<', '&lt;')
                 content = content.replace('>', '&gt;')
                 names_of_used[names_of_usedL.index(
-                    initial_check)].data += content
+                    initial_check)].data += content + '\n'
                 details = line + 1
                 finished = False
                 while not finished:
@@ -112,7 +112,7 @@ def clang_tidy_visualizer(tidy_log_file: Path,
                     # name for the organization of checks in the HTML file.
                     if not finished:
                         names_of_used[names_of_usedL.index(
-                            initial_check)].data += tidy_log_lines[details]
+                            initial_check)].data += tidy_log_lines[details] + '\n'
                         details += 1
 
     with open(output_html_file, "w") as clang_html:
@@ -229,7 +229,7 @@ def writeList(f, num_used_checks, names_of_used, clang_base_url, total_num_check
 """)
 
     # Attach a button to the list of all checks in clang. Link opens in a new tab.
-    clang_check_url = clang_base_url + 'list.html'
+    clang_check_url = clang_base_url.replace('/', '\/') + 'list.html'
     external_name = 'Clang-Tidy Checks'
     f.write("""
                 <button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('{}','_blank')\"
@@ -249,7 +249,7 @@ def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
     for line in tidy_log_lines:
         line = line.replace('<', '&lt;')
         line = line.replace('>', '&gt;')
-        f.write("{}".format(line))
+        f.write("{}\n".format(line))
 
     f.write("""
             </pre>
@@ -271,7 +271,7 @@ def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
 
         # Attach a button to the specific check's docs in clang. Link opens in a new tab.
         stripped_check_name = names_of_used[check_idx].name[1:len(names_of_used[check_idx].name)-1]
-        clang_check_url = clang_base_url + stripped_check_name + '.html'
+        clang_check_url = clang_base_url.replace('/', '\/') + stripped_check_name + '.html'
         external_name = 'Documentation'
         f.write("""
                     <button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('{}','_blank')\"
