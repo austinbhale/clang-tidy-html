@@ -158,7 +158,15 @@ def usage():
     Generates an html file as a visual for clang-tidy checks. Additionally, it writes a checks.py file that
     informs you which checks have been scraped from http://clang.llvm.org/extra/clang-tidy/checks/list.html
 
-    Arguments: python -m clang_html [logfile.log]
+    How to use:
+    - Call the script directly:
+        1. clang-tidy-html [logfile.log]
+        2. python -m clang_html [logfile.log]
+    OR
+    - Import it in your Python terminal:
+        >>> from pathlib import Path
+        >>> from clang_html import clang_tidy_visualizer
+        >>> clang_tidy_visualizer(Path("examples/sample.log"))
 
 ***----------------------------------------------------------------------------------------------------------***""")
 

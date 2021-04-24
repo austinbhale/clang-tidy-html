@@ -3,13 +3,12 @@
 A visualizer for LLVM's linting tool: clang-tidy.
 
 ## Getting Started with pip
-Install it
+Install it:
 ```
 python -m pip install clang-html
 ```
 In your shell:
 ```
-
 # Call it as python module
 python -m clang_html [logfile.log]
 
@@ -66,6 +65,8 @@ The script takes in one file argument of a txt or log file with your outputted c
 cd src/
 python -m clang_html [newfile.log]
 ```
+
+## Example Output
 
 Inside the same directory as clang_visualizer.py, you will find a new html file called 'clang.html'.
 

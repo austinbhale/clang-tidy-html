@@ -7,7 +7,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='clang-html',
-    version='1.3.5',
+    version='1.3.6',
     description='Generates an html file that organizes your clang-tidy log output with the latest clang-tidy checks.',
     long_description=long_description,
     long_description_content_type="text/markdown",
