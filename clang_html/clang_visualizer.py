@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import List
 
 from bs4 import BeautifulSoup
+import re
 
 log = logging.getLogger(__name__)
 handler = logging.StreamHandler()
@@ -14,6 +15,45 @@ log_format = '%(asctime)s - %(name)12s - %(levelname)8s - %(message)s'
 handler.setFormatter(logging.Formatter(log_format))
 log.addHandler(handler)
 log.setLevel(logging.DEBUG)
+
+COLOR_DICT = {
+    '0': [(88, 88, 88), (88, 88, 88)],
+    '30': [(0, 0, 0), (0, 0, 0)],
+    '31': [(255, 0, 0), (128, 0, 0)],
+    '32': [(0, 255, 0), (0, 128, 0)],
+    '33': [(255, 255, 0), (128, 128, 0)],
+    '34': [(0, 0, 255), (0, 0, 128)],
+    '35': [(255, 0, 255), (128, 0, 128)],
+    '36': [(0, 255, 255), (0, 128, 128)],
+    '37': [(255, 255, 255), (128, 128, 128)],
+}
+
+COLOR_REGEX = re.compile(r'\[(?P<arg_1>\d+)(;(?P<arg_2>\d+)(;(?P<arg_3>\d+))?)?m')
+
+BOLD_TEMPLATE = '<span style="color: rgb{}; font-weight: bolder">'
+LIGHT_TEMPLATE = '<span style="color: rgb{}">'
+
+
+def ansi_to_html(text):
+    text = text.replace('[0m', '</span>').replace('\033', '')
+
+    def single_sub(match):
+        argsdict = match.groupdict()
+        color = '0'
+        for arg in argsdict.values():
+            if arg is not None:
+                val = int(str(arg))
+                if val == 0:
+                    bold = False
+                elif val == 1:
+                    bold = True
+                elif val >= 30 and val <= 37:
+                    color = arg
+        if bold:
+            return BOLD_TEMPLATE.format(COLOR_DICT[color][1])
+        return LIGHT_TEMPLATE.format(COLOR_DICT[color][0])
+
+    return COLOR_REGEX.sub(single_sub, text)
 
 # You can also import custom clang checks from checks.py below.
 # from checks import checks_list
@@ -288,7 +328,7 @@ def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
 
         names_of_used[check_idx].data = names_of_used[check_idx].data.replace('<', '&lt;')
         names_of_used[check_idx].data = names_of_used[check_idx].data.replace('>', '&gt;')
-
+        names_of_used[check_idx].data = ansi_to_html(names_of_used[check_idx].data)
         f.write("""{}
             </pre>
         </div>
