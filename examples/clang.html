@@ -325,33 +325,38 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
 	var highlights = 'highlights';
 	// Retrieves local storage data on document load for highlighted checks.
 	$(document).ready(function () {
-		for (var all_checks = 0; all_checks < 7; all_checks++) {
-			var check_hl = document.getElementById("check" + all_checks);
-			switch (JSON.parse(localStorage.getItem(highlights))[all_checks]) {
-				case "warning":
-					check_hl.classList.add('list-group-item-warning');
-					checks_arr[all_checks] = "warning"; break;
-				case "danger":
-					check_hl.classList.add('list-group-item-danger');
-					checks_arr[all_checks] = "danger"; break;
-				default:
-					checks_arr[all_checks] = "action";
-					if (check_hl !== null) {
-						check_hl.classList.add('list-group-item-action');
-					} break;
-			}
+        let stored_highlights = localStorage.getItem(highlights);
+		for (let all_checks = 0; all_checks < 7; all_checks++) {
+			let check_hl = document.getElementById("check" + all_checks);
+            let no_previous_state = false;
+            if (stored_highlights !== null) {
+                switch (JSON.parse(stored_highlights)[all_checks]) {
+                    case "warning":
+                        check_hl.classList.add('list-group-item-warning');
+                        checks_arr[all_checks] = "warning";
+                        break;
+                    case "danger":
+                        check_hl.classList.add('list-group-item-danger');
+                        checks_arr[all_checks] = "danger";
+                        break;
+                    default:
+                        no_previous_state = true;
+                        break;
+                }
+            }
+            
+            if (stored_highlights === null || no_previous_state) {
+                checks_arr[all_checks] = "action";
+                check_hl.classList.add('list-group-item-action');
+            }
 		}
 		localStorage.setItem(highlights, JSON.stringify(checks_arr));
 	});
 
 	function toggleLog() {
-		var log = document.getElementById("showLog");
+		let log = document.getElementById("showLog");
 		clearContent();
-		if (log.style.display === "none") {
-			log.style.display = "block";
-		} else {
-			log.style.display = "none";
-		}
+        log.style.display = (log.style.display === "none") ? "block" : "none";
 		selected_idx = undefined;
 	}
 
@@ -359,23 +364,19 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
 		selected_idx = check_position;
 		clearContent();
 		// Displays the chosen clang-tidy category.
-		var category = document.getElementById("show" + check_position);
-		if (category.style.display === "none") {
-			category.style.display = "block";
-		} else {
-			category.style.display = "none";
-		}
+		let category = document.getElementById("show" + check_position);
+        category.style.display = (category.style.display === "none") ? "block" : "none";
 	}
 
 	// Clears document when choosing another selection.
 	function clearContent() {
-		for (var all_checks = 0; all_checks < 7; all_checks++) {
-			var clear = document.getElementById("show" + all_checks);
+		for (let all_checks = 0; all_checks < 7; all_checks++) {
+			let clear = document.getElementById("show" + all_checks);
 			if (clear.style.display === "block") {
 				clear.style.display = "none";
 			}
 		}
-		var clearLog = document.getElementById("showLog");
+		let clearLog = document.getElementById("showLog");
 		if (clearLog.style.display === "block") {
 			clearLog.style.display = "none";
 		}
@@ -384,20 +385,35 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
 	// Type 1 used for highlighting danger checks and 0 for warnings.
 	function highlightChecks(type) {
 		if (selected_idx === undefined) return;
-		var check_hl = document.getElementById("check" + selected_idx);
+		let check_hl = document.getElementById("check" + selected_idx);
 		if (check_hl !== null) {
-			if (check_hl.classList.contains('list-group-item-action')) {
-				check_hl.classList.remove('list-group-item-action');
-				type == 1 ? check_hl.classList.add('list-group-item-danger') : check_hl.classList.add('list-group-item-warning');
-				type == 1 ? checks_arr[selected_idx] = "danger" : checks_arr[selected_idx] = "warning";
-			} else if (check_hl.classList.contains('list-group-item-warning')) {
+			if (check_hl.classList.contains('list-group-item-warning')) {
 				check_hl.classList.remove('list-group-item-warning');
-				type == 1 ? check_hl.classList.add('list-group-item-danger') : check_hl.classList.add('list-group-item-action');
-				type == 1 ? checks_arr[selected_idx] = "danger" : checks_arr[selected_idx] = "action";
-			} else {
+                if (type == 1) {
+                    check_hl.classList.add('list-group-item-danger');
+                    checks_arr[selected_idx] = "danger";
+                } else {
+                    check_hl.classList.add('list-group-item-action');
+                    checks_arr[selected_idx] = "action"
+                }
+			} else if (check_hl.classList.contains('list-group-item-danger')) {
 				check_hl.classList.remove('list-group-item-danger');
-				type == 1 ? check_hl.classList.add('list-group-item-action') : check_hl.classList.add('list-group-item-warning');
-				type == 1 ? checks_arr[selected_idx] = "action" : checks_arr[selected_idx] = "warning";
+                if (type == 1) {
+                    check_hl.classList.add('list-group-item-action');
+                    checks_arr[selected_idx] = "action";
+                } else {
+                    check_hl.classList.add('list-group-item-warning');
+                    checks_arr[selected_idx] = "warning";
+                }
+			} else if (check_hl.classList.contains('list-group-item-action')) {
+				check_hl.classList.remove('list-group-item-action');
+                if (type == 1) {
+                    check_hl.classList.add('list-group-item-danger');
+                    checks_arr[selected_idx] = "danger";
+                } else {
+                    check_hl.classList.add('list-group-item-warning');
+                    checks_arr[selected_idx] = "warning";
+                }
 			}
 		}
 		// Sets local storage for each occurrence of a highlighted check.
@@ -405,8 +421,8 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
 	}
 
 	function clearChecks(type) {
-		for (var all_checks = 0; all_checks < 7; all_checks++) {
-			var clear = (document.getElementById("check" + all_checks));
+		for (let all_checks = 0; all_checks < 7; all_checks++) {
+			let clear = (document.getElementById("check" + all_checks));
 			checks_arr[all_checks] = "action";
 			if (clear !== null) {
 				if (clear.classList.contains('list-group-item-warning')) {
@@ -422,22 +438,29 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
 	}
 
 	function collapseSidebar() {
-		var list = document.getElementById("list"); var hasExpanded;
-		var log_details = document.getElementById("showLog");
+		let list = document.getElementById("list"); let hasExpanded;
+		let log_details = document.getElementById("showLog");
 		list.style.display === "block" ? hasSidebar = true : hasSidebar = false;
 		hasSidebar ? list.style.display = "none" : list.style.display = "block";
-		for (var all_checks = 0; all_checks <= 7; all_checks++) {
-			var collapse_img = document.getElementById("collapse-img" + all_checks);
-			var collapse_btn = document.getElementById("collapse-btn" + all_checks);
-			var check_details = document.getElementById("show" + all_checks);
+		for (let all_checks = 0; all_checks <= 7; all_checks++) {
+			let collapse_img = document.getElementById("collapse-img" + all_checks);
+			let collapse_btn = document.getElementById("collapse-btn" + all_checks);
+			let check_details = document.getElementById("show" + all_checks);
 			if (collapse_img !== null) {
-				hasSidebar ? collapse_img.classList.remove('glyphicon-menu-left') : collapse_img.classList.remove('glyphicon-menu-right');
-				hasSidebar ? collapse_img.classList.add('glyphicon-menu-right') : collapse_img.classList.add('glyphicon-menu-left');
-				hasSidebar ? collapse_btn.title = "Expand sidebar" : collapse_btn.title = "Collapse sidebar";
+                if (hasSidebar) {
+                    collapse_img.classList.remove('glyphicon-menu-left');
+                    collapse_img.classList.add('glyphicon-menu-right');
+                    collapse_btn.title = "Expand sidebar";
+                }
+                else {
+                    collapse_img.classList.remove('glyphicon-menu-right');
+                    collapse_img.classList.add('glyphicon-menu-left');
+                    collapse_btn.title = "Collapse sidebar";
+                }
 			}
-			if (check_details !== null) { hasSidebar ? check_details.style.width = "100%" : check_details.style.width = "75%"; }
+			if (check_details !== null) { check_details.style.width = hasSidebar ? "100%" : "75%"; }
 		}
-		hasSidebar ? log_details.style.width = "100%" : log_details.style.width = "75%";
+		log_details.style.width = hasSidebar ? "100%" : "75%";
 	}
 </script>
 <style>
