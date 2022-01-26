@@ -1,8 +1,9 @@
 # clang-html
-
 A visualizer for LLVM's linting tool: clang-tidy.
 
-## Getting Started with pip
+## Getting Started with pip 
+![test](https://static.pepy.tech/personalized-badge/clang-html?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads)
+
 Install it:
 ```
 python -m pip install clang-html
