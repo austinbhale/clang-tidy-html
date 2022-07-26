@@ -26,35 +26,35 @@
 	    <ul id="list" class="list-group" align="left" style="display: block; width: 25%; height: 0; margin-bottom: 0;">
 
             <a id="log" href="#" class="list-group-item list-group-item-success" style="color: black; font-weight: bold; letter-spacing:0.4px;"onclick="toggleLog()">
-                10 Original Log
+                11 Original Log
             </a>
 
             <a id="check0" style="color: black" href="#" class="list-group-item list-group-item-action"onclick="toggleInfo(0)">
-                2 [android-cloexec-fopen]
+                2 android-cloexec-fopen
             </a>
 
             <a id="check1" style="color: black" href="#" class="list-group-item list-group-item-action"onclick="toggleInfo(1)">
-                1 [clang-analyzer-security.insecureAPI.strcpy]
+                1 clang-analyzer-security.insecureAPI.strcpy
             </a>
 
             <a id="check2" style="color: black" href="#" class="list-group-item list-group-item-action"onclick="toggleInfo(2)">
-                1 [google-readability-braces-around-statements]
+                1 google-readability-braces-around-statements
             </a>
 
             <a id="check3" style="color: black" href="#" class="list-group-item list-group-item-action"onclick="toggleInfo(3)">
-                2 [hicpp-braces-around-statements]
+                2 hicpp-braces-around-statements
             </a>
 
             <a id="check4" style="color: black" href="#" class="list-group-item list-group-item-action"onclick="toggleInfo(4)">
-                1 [llvm-include-order]
+                1 llvm-include-order
             </a>
 
             <a id="check5" style="color: black" href="#" class="list-group-item list-group-item-action"onclick="toggleInfo(5)">
-                2 [readability-braces-around-statements]
+                3 readability-braces-around-statements
             </a>
 
             <a id="check6" style="color: black" href="#" class="list-group-item list-group-item-action"onclick="toggleInfo(6)">
-                1 [readability-inconsistent-declaration-parameter-name]
+                1 readability-inconsistent-declaration-parameter-name
             </a>
 
         </ul>
@@ -161,7 +161,7 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
                     clang-analyzer-security.insecureAPI.strcpy
                 </h4>
 
-                    <button id="externalLink" type="button" class="btn" onclick="window.open('https:\/\/clang.llvm.org\/extra\/clang-tidy\/checks\/clang/analyzer-security.insecureAPI.strcpy.html','_blank')"
+                    <button id="externalLink" type="button" class="btn" onclick="window.open('https:\/\/clang.llvm.org\/extra\/clang-tidy\/checks\/clang-analyzer/security.insecureAPI.strcpy.html','_blank')"
                                 style="outline: none; position: absolute; color: #111; right: 0; background-color: rgb(181, 215, 247)">
                         Documentation
                         <span class="glyphicon glyphicon-new-window">
@@ -281,6 +281,10 @@ void read_log(FILE *log, node_t *head, node_t **next, char line[]);
                 if (check_details &gt; 3)
                                       ^
                                        {
+/home/ahale/clangtidy_generator/clang_visualizer.c:1231:53: warning: statement should be inside braces [google-readability-braces-around-statements]
+        for (struct node *ptr = head; ptr; ptr = ptr-&gt;next)
+                                                           ^
+                                                            {
 
             </pre>
         </div>
