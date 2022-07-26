@@ -99,7 +99,7 @@ def clang_tidy_visualizer(tidy_log_file: Path,
         content = content.replace('<', '&lt;')
         content = content.replace('>', '&gt;')
         for check_name in checks_list:
-            if content.find(check_name) != -1:
+            if content.find(check_name.replace('/', '-')) != -1:
                 checks_used[checks_list.index(check_name)] += 1
 
     # Counts the max number of used checks in the log file.
@@ -130,7 +130,7 @@ def clang_tidy_visualizer(tidy_log_file: Path,
         # Goes through each used check.
         for initial_check in names_of_usedL:
             # Adds the lines that detail the warning message.
-            if content.find(initial_check) != -1:
+            if content.find(initial_check.replace('/', '-')) != -1:
                 content = content.replace('<', '&lt;')
                 content = content.replace('>', '&gt;')
                 names_of_used[names_of_usedL.index(
@@ -144,7 +144,7 @@ def clang_tidy_visualizer(tidy_log_file: Path,
                     # If the line includes a used Clang-Tidy check name,
                     # continue to find the next.
                     for end_check in names_of_usedL:
-                        if tidy_log_lines[details].find(end_check) != -1:
+                        if tidy_log_lines[details].find(end_check.replace('/', '-')) != -1:
                             finished = True
                             break
                     # Otherwise, add the data to the specific used check
@@ -266,7 +266,7 @@ def writeList(f, num_used_checks, names_of_used, clang_base_url, total_num_check
             <a id=\"check{0}\" style=\"color: black\" href=\"#\" class=\"list-group-item list-group-item-action\"onclick=\"toggleInfo({0})\">
                 {1} {2}
             </a>
-""".format(line, names_of_used[line].count, names_of_used[line].name))
+""".format(line, names_of_used[line].count, names_of_used[line].name.replace('/', '-')))
 
     f.write("""
         </ul>
