@@ -99,7 +99,7 @@ def clang_tidy_visualizer(tidy_log_file: Path,
         content = content.replace('<', '&lt;')
         content = content.replace('>', '&gt;')
         for check_name in checks_list:
-            if content.find(check_name.replace('/', '-')) != -1:
+            if content.find(check_name) != -1:
                 checks_used[checks_list.index(check_name)] += 1
 
     # Counts the max number of used checks in the log file.
@@ -130,7 +130,7 @@ def clang_tidy_visualizer(tidy_log_file: Path,
         # Goes through each used check.
         for initial_check in names_of_usedL:
             # Adds the lines that detail the warning message.
-            if content.find(initial_check.replace('/', '-')) != -1:
+            if content.find(initial_check) != -1:
                 content = content.replace('<', '&lt;')
                 content = content.replace('>', '&gt;')
                 names_of_used[names_of_usedL.index(
@@ -144,7 +144,7 @@ def clang_tidy_visualizer(tidy_log_file: Path,
                     # If the line includes a used Clang-Tidy check name,
                     # continue to find the next.
                     for end_check in names_of_usedL:
-                        if tidy_log_lines[details].find(end_check.replace('/', '-')) != -1:
+                        if tidy_log_lines[details].find(end_check) != -1:
                             finished = True
                             break
                     # Otherwise, add the data to the specific used check
@@ -159,7 +159,7 @@ def clang_tidy_visualizer(tidy_log_file: Path,
         # Functions for writing to the clang.html file.
         writeHeader(clang_html)
         writeList(clang_html, num_used_checks, names_of_used, clang_base_url, total_num_checks)
-        sortLogs(clang_html, tidy_log_lines, num_used_checks, names_of_used, clang_base_url)
+        writeSortedLogs(clang_html, tidy_log_lines, num_used_checks, names_of_used, clang_base_url)
         writeScript(clang_html, num_used_checks)
 
 
@@ -171,9 +171,10 @@ def find_checks_list(clang_base_url: str):
 
     scrape_checks_list = []
     for link in soup.find_all('a', href=True):
-        check = re.match("^([a-zA-Z0-9].*).html.*$", link['href'])
-        if check:
-            scrape_checks_list.append("[" + check.group(1) + "]")
+        match_docs_check_name = re.match("^([a-zA-Z0-9].*).html.*$", link['href'])
+        if match_docs_check_name:
+            docs_check_name = match_docs_check_name.group(1)
+            scrape_checks_list.append("[" + fromClangDocsName(docs_check_name) + "]")
 
     checks_list = list(dict.fromkeys(scrape_checks_list))
     return checks_list
@@ -188,6 +189,13 @@ def write_checks_file(checks_list, to_file):
             else:
                 f.write("'{}',".format(item))
 
+# Helper functions to fix the links of the clang-tidy documentation.
+# Referenced in #8
+def toClangDocsName(original_check_name):
+    return original_check_name.replace('-', '/', 1)
+
+def fromClangDocsName(docs_check_name):
+    return docs_check_name.replace('/', '-', 1)
 
 # Prints usage information for the script.
 def usage():
@@ -255,7 +263,7 @@ def writeList(f, num_used_checks, names_of_used, clang_base_url, total_num_check
             <a id=\"check{0}\" style=\"color: black\" href=\"#\" class=\"list-group-item list-group-item-action\"onclick=\"toggleInfo({0})\">
                 {1} {2}
             </a>
-""".format(line, names_of_used[line].count, names_of_used[line].name.replace('/', '-')))
+""".format(line, names_of_used[line].count, names_of_used[line].name))
 
     f.write("""
         </ul>
@@ -284,7 +292,7 @@ def writeList(f, num_used_checks, names_of_used, clang_base_url, total_num_check
 """)
 
 # Sort through the used check logs for outputting the html.
-def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
+def writeSortedLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
     for line in tidy_log_lines:
         line = line.replace('<', '&lt;')
         line = line.replace('>', '&gt;')
@@ -306,11 +314,12 @@ def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
                 <h4 style=\"margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10px;\">
                     {2}
                 </h4>
-""".format(check_idx, collapse_idx, names_of_used[check_idx].name[1:-1].replace('/', '-')))
+""".format(check_idx, collapse_idx, names_of_used[check_idx].name[1:-1]))
 
         # Attach a button to the specific check's docs in clang. Link opens in a new tab.
         stripped_check_name = names_of_used[check_idx].name[1:len(names_of_used[check_idx].name)-1]
-        clang_check_url = clang_base_url.replace('/', '\/') + stripped_check_name + '.html'
+        docs_check_name = toClangDocsName(stripped_check_name)
+        clang_check_url = clang_base_url.replace('/', '\/') + docs_check_name + '.html'
         external_name = 'Documentation'
         f.write("""
                     <button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('{}','_blank')\"
