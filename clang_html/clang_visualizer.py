@@ -4,7 +4,6 @@ import re
 import sys
 import urllib.request
 from pathlib import Path
-from typing import List
 
 from bs4 import BeautifulSoup
 
@@ -59,11 +58,10 @@ def ansi_to_html(text):
 
 # Each check will have its own node of information.
 class checks:
-    def __init__(self, dataval=None):
+    def __init__(self,dataval=None):
         self.name = ''
         self.count = 0
         self.data = ''
-
 
 # Begin here.
 def main():
@@ -86,7 +84,9 @@ def clang_tidy_visualizer(tidy_log_file: Path,
                           output_html_file: Path = Path("clang.html")):
     tidy_log_lines = tidy_log_file.read_text().splitlines()
     clang_base_url = "https://clang.llvm.org/extra/clang-tidy/checks/"
-    checks_list = find_checks_list(clang_base_url)
+    global checks_dict
+    checks_dict = find_checks_dict(clang_base_url)
+    checks_list = list(checks_dict.keys())
     checks_list.sort()
 
     # Updates the newest clang-tidy checks to your checks.py file.
@@ -159,24 +159,25 @@ def clang_tidy_visualizer(tidy_log_file: Path,
         # Functions for writing to the clang.html file.
         writeHeader(clang_html)
         writeList(clang_html, num_used_checks, names_of_used, clang_base_url, total_num_checks)
-        sortLogs(clang_html, tidy_log_lines, num_used_checks, names_of_used, clang_base_url)
+        writeSortedLogs(clang_html, tidy_log_lines, num_used_checks, names_of_used, clang_base_url)
         writeScript(clang_html, num_used_checks)
 
 
 # Scrape data from clang-tidy's official list of current checks.
-def find_checks_list(clang_base_url: str):
+def find_checks_dict(clang_base_url: str):
     url = clang_base_url + 'list.html'
     resp = urllib.request.urlopen(url)
     soup = BeautifulSoup(resp, "lxml")
 
-    scrape_checks_list = []
+    scrape_checks_dict = dict()
     for link in soup.find_all('a', href=True):
-        check = re.match("^([a-zA-Z0-9].*).html.*$", link['href'])
-        if check:
-            scrape_checks_list.append("[" + check.group(1) + "]")
-
-    checks_list = list(dict.fromkeys(scrape_checks_list))
-    return checks_list
+        match_docs_check_name = re.match("^([a-zA-Z0-9].*).html.*$", link['href'])
+        if match_docs_check_name:
+            docs_check_name = match_docs_check_name.group(1)
+            split_docs_check = docs_check_name.split('/')
+            if len(split_docs_check) == 2:
+                scrape_checks_dict[fromClangDocsName(docs_check_name)] = split_docs_check[0]
+    return scrape_checks_dict
 
 # Optional: Update the checks.py file with the most recent checks.
 def write_checks_file(checks_list, to_file):
@@ -188,6 +189,16 @@ def write_checks_file(checks_list, to_file):
             else:
                 f.write("'{}',".format(item))
 
+# Helper functions to fix the links of the clang-tidy documentation.
+# Referenced in #8
+def toClangDocsName(original_check_name):
+    checks_category = checks_dict[original_check_name]
+    match_except_first_hyphen = re.compile(rf'^({checks_category})-(.*)$')
+    clang_docs_name = match_except_first_hyphen.sub(r'\1/\2', original_check_name)
+    return clang_docs_name
+
+def fromClangDocsName(docs_check_name):
+    return docs_check_name.replace('/', '-', 1)
 
 # Prints usage information for the script.
 def usage():
@@ -284,7 +295,7 @@ def writeList(f, num_used_checks, names_of_used, clang_base_url, total_num_check
 """)
 
 # Sort through the used check logs for outputting the html.
-def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
+def writeSortedLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
     for line in tidy_log_lines:
         line = line.replace('<', '&lt;')
         line = line.replace('>', '&gt;')
@@ -306,11 +317,11 @@ def sortLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_base_url):
                 <h4 style=\"margin-top: 0; color: #111; position: absolute; left: 50%; transform: translateX(-50%); margin-bottom: 10px;\">
                     {2}
                 </h4>
-""".format(check_idx, collapse_idx, names_of_used[check_idx].name[1:-1].replace('/', '-')))
+""".format(check_idx, collapse_idx, names_of_used[check_idx].name))
 
         # Attach a button to the specific check's docs in clang. Link opens in a new tab.
-        stripped_check_name = names_of_used[check_idx].name[1:len(names_of_used[check_idx].name)-1]
-        clang_check_url = clang_base_url.replace('/', '\/') + stripped_check_name + '.html'
+        docs_check_name = toClangDocsName(names_of_used[check_idx].name)
+        clang_check_url = clang_base_url.replace('/', '\/') + docs_check_name + '.html'
         external_name = 'Documentation'
         f.write("""
                     <button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('{}','_blank')\"
