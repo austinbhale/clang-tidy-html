@@ -6,6 +6,8 @@ import urllib.request
 from pathlib import Path
 
 from bs4 import BeautifulSoup
+import ssl
+import certifi
 
 log = logging.getLogger(__name__)
 handler = logging.StreamHandler()
@@ -166,7 +168,7 @@ def clang_tidy_visualizer(tidy_log_file: Path,
 # Scrape data from clang-tidy's official list of current checks.
 def find_checks_dict(clang_base_url: str):
     url = clang_base_url + 'list.html'
-    resp = urllib.request.urlopen(url)
+    resp = urllib.request.urlopen(url, context=ssl.create_default_context(cafile=certifi.where()))
     soup = BeautifulSoup(resp, "lxml")
 
     scrape_checks_dict = dict()
