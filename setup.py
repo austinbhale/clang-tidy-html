@@ -7,7 +7,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
     name='clang-html',
-    version='1.4.1',
+    version='1.4.2',
     description='Generates an html file that organizes your clang-tidy log output with the latest clang-tidy checks.',
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -16,7 +16,9 @@ setup(
     author_email='ah@unc.edu',
     license='MIT License',
     install_requires=[
+        "argparse",
         "beautifulsoup4",
+        "certifi",
         "lxml",
     ],
     classifiers=[

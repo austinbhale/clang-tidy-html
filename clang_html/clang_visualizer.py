@@ -28,7 +28,8 @@ COLOR_DICT = {
     '37': [(255, 255, 255), (128, 128, 128)],
 }
 
-COLOR_REGEX = re.compile(r'\[(?P<arg_1>\d+)(;(?P<arg_2>\d+)(;(?P<arg_3>\d+))?)?m')
+COLOR_REGEX = re.compile(
+    r'\[(?P<arg_1>\d+)(;(?P<arg_2>\d+)(;(?P<arg_3>\d+))?)?m')
 
 BOLD_TEMPLATE = '<span style="color: rgb{}; font-weight: bolder">'
 LIGHT_TEMPLATE = '<span style="color: rgb{}">'
@@ -60,7 +61,7 @@ def ansi_to_html(text):
 
 # Each check will have its own node of information.
 class checks:
-    def __init__(self,dataval=None):
+    def __init__(self, dataval=None):
         self.name = ''
         self.count = 0
         self.data = ''
@@ -70,6 +71,8 @@ def main():
     # Process command line arguments.
     parser = argparse.ArgumentParser()
     parser.add_argument('file', type=Path)
+    parser.add_argument(
+        '-o', '--out', help="name for the generated html file.", nargs='?', const="clang.html", type=str)
 
     try:
         args = parser.parse_args()
@@ -79,7 +82,8 @@ def main():
         sys.exit(-1)
 
     tidy_log_lines: Path = args.file
-    clang_tidy_visualizer(tidy_log_lines)
+    output_path: Path = Path(args.out)
+    clang_tidy_visualizer(tidy_log_lines, output_path)
 
 
 def clang_tidy_visualizer(tidy_log_file: Path,
@@ -92,7 +96,8 @@ def clang_tidy_visualizer(tidy_log_file: Path,
     checks_list.sort()
 
     # Updates the newest clang-tidy checks to your checks.py file.
-    write_checks_file(checks_list, to_file=output_html_file.parent / "clang-tidy-checks.py")
+    write_checks_file(
+        checks_list, to_file=output_html_file.parent / "clang-tidy-checks.py")
 
     checks_used = [0] * len(checks_list)
 
@@ -160,25 +165,30 @@ def clang_tidy_visualizer(tidy_log_file: Path,
         log.info(f"Writing results to {output_html_file}")
         # Functions for writing to the clang.html file.
         writeHeader(clang_html)
-        writeList(clang_html, num_used_checks, names_of_used, clang_base_url, total_num_checks)
-        writeSortedLogs(clang_html, tidy_log_lines, num_used_checks, names_of_used, clang_base_url)
+        writeList(clang_html, num_used_checks, names_of_used,
+                  clang_base_url, total_num_checks)
+        writeSortedLogs(clang_html, tidy_log_lines,
+                        num_used_checks, names_of_used, clang_base_url)
         writeScript(clang_html, num_used_checks)
 
 
 # Scrape data from clang-tidy's official list of current checks.
 def find_checks_dict(clang_base_url: str):
     url = clang_base_url + 'list.html'
-    resp = urllib.request.urlopen(url, context=ssl.create_default_context(cafile=certifi.where()))
+    resp = urllib.request.urlopen(
+        url, context=ssl.create_default_context(cafile=certifi.where()))
     soup = BeautifulSoup(resp, "lxml")
 
     scrape_checks_dict = dict()
     for link in soup.find_all('a', href=True):
-        match_docs_check_name = re.match("^([a-zA-Z0-9].*).html.*$", link['href'])
+        match_docs_check_name = re.match(
+            "^([a-zA-Z0-9].*).html.*$", link['href'])
         if match_docs_check_name:
             docs_check_name = match_docs_check_name.group(1)
             split_docs_check = docs_check_name.split('/')
             if len(split_docs_check) == 2:
-                scrape_checks_dict[fromClangDocsName(docs_check_name)] = split_docs_check[0]
+                scrape_checks_dict[fromClangDocsName(
+                    docs_check_name)] = split_docs_check[0]
     return scrape_checks_dict
 
 # Optional: Update the checks.py file with the most recent checks.
@@ -196,7 +206,8 @@ def write_checks_file(checks_list, to_file):
 def toClangDocsName(original_check_name):
     checks_category = checks_dict[original_check_name]
     match_except_first_hyphen = re.compile(rf'^({checks_category})-(.*)$')
-    clang_docs_name = match_except_first_hyphen.sub(r'\1/\2', original_check_name)
+    clang_docs_name = match_except_first_hyphen.sub(
+        r'\1/\2', original_check_name)
     return clang_docs_name
 
 def fromClangDocsName(docs_check_name):
@@ -219,6 +230,11 @@ def usage():
         >>> from pathlib import Path
         >>> from clang_html import clang_tidy_visualizer
         >>> clang_tidy_visualizer(Path("examples/sample.log"))
+
+    Optional args:
+    - [-o, --out] or clang_tidy_visualizer(path_to_log: Path, output_path: Path) 
+        - Rename the generated html file. The default filename is stored as "clang.html" in the directory
+          from where you call the script.
 
 ***----------------------------------------------------------------------------------------------------------***""")
 
@@ -323,7 +339,8 @@ def writeSortedLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_bas
 
         # Attach a button to the specific check's docs in clang. Link opens in a new tab.
         docs_check_name = toClangDocsName(names_of_used[check_idx].name)
-        clang_check_url = clang_base_url.replace('/', '\/') + docs_check_name + '.html'
+        clang_check_url = clang_base_url.replace(
+            '/', '\/') + docs_check_name + '.html'
         external_name = 'Documentation'
         f.write("""
                     <button id=\"externalLink\" type=\"button\" class=\"btn\" onclick=\"window.open('{}','_blank')\"
@@ -338,9 +355,12 @@ def writeSortedLogs(f, tidy_log_lines, num_used_checks, names_of_used, clang_bas
             <pre>
 """)
 
-        names_of_used[check_idx].data = names_of_used[check_idx].data.replace('<', '&lt;')
-        names_of_used[check_idx].data = names_of_used[check_idx].data.replace('>', '&gt;')
-        names_of_used[check_idx].data = ansi_to_html(names_of_used[check_idx].data)
+        names_of_used[check_idx].data = names_of_used[check_idx].data.replace(
+            '<', '&lt;')
+        names_of_used[check_idx].data = names_of_used[check_idx].data.replace(
+            '>', '&gt;')
+        names_of_used[check_idx].data = ansi_to_html(
+            names_of_used[check_idx].data)
         f.write("""{}
             </pre>
         </div>
