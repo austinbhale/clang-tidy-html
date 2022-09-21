@@ -11,10 +11,10 @@ python -m pip install clang-html
 In your shell:
 ```
 # Call it as python module
-python -m clang_html [logfile.log]
+python -m clang_html [logfile.log] [-o clang.html]
 
 # Call it directly
-clang-tidy-html [logfile.log]
+clang-tidy-html [logfile.log] [-o clang.html]
 ```
 
 In your python terminal:
@@ -27,8 +27,10 @@ In your python terminal:
 ```
 
 ### Libraries
+- [argparse](https://pypi.org/project/argparse/)
+- [beautifulsoup4](https://pypi.org/project/beautifulsoup4/)
+- [certifi](https://pypi.org/project/certifi/)
 - [lxml](https://pypi.org/project/lxml/)
-- [BeautifulSoup](https://pypi.org/project/beautifulsoup4/)
 
 ### Prerequisites
 
@@ -63,12 +65,14 @@ Clone or fork this repository to run the script on your native system.
 The script takes in one file argument of a txt or log file with your outputted clang-tidy checks.
 
 ```
-python -m clang_html [newfile.log]
+python -m clang_html [newfile.log] [-o clang.html]
 ```
 
 ## Example Output
 
 Inside the same directory as clang_visualizer.py, you will find a new html file called 'clang.html'.
+
+You can also specify your custom file name when calling the script with `[-o, --out] other_name.html` or `clang_tidy_visualizer(Path("sample.log"), Path("clang.html"))`.
 
 An example html output can be found [here](https://austinbhale.com/Clang-Visualizer/examples/clang.html).
 
