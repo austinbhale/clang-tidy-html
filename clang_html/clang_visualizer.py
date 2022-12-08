@@ -72,7 +72,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('file', type=Path)
     parser.add_argument(
-        '-o', '--out', help="name for the generated html file.", nargs='?', const="clang.html", type=str)
+        '-o', '--out', help="name for the generated html file.", nargs='?', const="clang.html", default="clang.html", type=str)
 
     try:
         args = parser.parse_args()
