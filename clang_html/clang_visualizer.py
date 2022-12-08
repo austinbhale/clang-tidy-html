@@ -232,7 +232,7 @@ def usage():
         >>> clang_tidy_visualizer(Path("examples/sample.log"))
 
     Optional args:
-    - [-o, --out] or clang_tidy_visualizer(path_to_log: Path, output_path: Path) 
+    - [-o, --out] or clang_tidy_visualizer(path_to_log: Path, output_path: Path)
         - Rename the generated html file. The default filename is stored as "clang.html" in the directory
           from where you call the script.
 
@@ -399,7 +399,7 @@ def writeScript(f, num_used_checks):
                         break;
                 }}
             }}
-            
+
             if (stored_highlights === null || no_previous_state) {{
                 checks_arr[all_checks] = "action";
                 check_hl.classList.add('list-group-item-action');
