@@ -91,7 +91,8 @@ def clang_tidy_visualizer(tidy_log_file: Path,
     tidy_log_lines = tidy_log_file.read_text().splitlines()
     clang_base_url = "https://clang.llvm.org/extra/clang-tidy/checks/"
     global checks_dict
-    checks_dict = find_checks_dict(clang_base_url)
+    checks_dict_url = clang_base_url + 'list.html'
+    checks_dict = find_checks_dict(checks_dict_url)
     checks_list = list(checks_dict.keys())
     checks_list.sort()
 
@@ -173,10 +174,9 @@ def clang_tidy_visualizer(tidy_log_file: Path,
 
 
 # Scrape data from clang-tidy's official list of current checks.
-def find_checks_dict(clang_base_url: str):
-    url = clang_base_url + 'list.html'
+def find_checks_dict(checks_dict_url: str):
     resp = urllib.request.urlopen(
-        url, context=ssl.create_default_context(cafile=certifi.where()))
+        checks_dict_url, context=ssl.create_default_context(cafile=certifi.where()))
     soup = BeautifulSoup(resp, "lxml")
 
     scrape_checks_dict = dict()
