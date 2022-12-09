@@ -1,7 +1,7 @@
 # clang-html
 A visualizer for LLVM's linting tool: clang-tidy.
 
-## Getting Started with pip 
+## Getting Started with pip
 ![test](https://static.pepy.tech/personalized-badge/clang-html?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads)
 
 Install it:
@@ -11,10 +11,10 @@ python -m pip install clang-html
 In your shell:
 ```
 # Call it as python module
-python -m clang_html [logfile.log] [-o clang.html]
+python -m clang_html [logfile.log] [-o clang.html] [-d list.html]
 
 # Call it directly
-clang-tidy-html [logfile.log] [-o clang.html]
+clang-tidy-html [logfile.log] [-o clang.html] [-d list.html]
 ```
 
 In your python terminal:
@@ -65,7 +65,7 @@ Clone or fork this repository to run the script on your native system.
 The script takes in one file argument of a txt or log file with your outputted clang-tidy checks.
 
 ```
-python -m clang_html [newfile.log] [-o clang.html]
+python -m clang_html [newfile.log] [-o clang.html] -d list.html
 ```
 
 ## Example Output
@@ -85,6 +85,8 @@ Feel free to create a pull request for any updates or fixes to this repository.
 ## Versioning
 
 This repository uses [LLVM Clang](http://clang.llvm.org/extra/clang-tidy/index.html) for versioning. All checks confirmed for version 6.0-10.0+. Earlier versions should have support for the vast majority of checks. Later versions update based on the information presented on LLVM's official [checks list](http://clang.llvm.org/extra/clang-tidy/checks/list.html).
+
+The `-d --checks_dict_url` option the check list can be replaced another version.
 
 ## Authors
 

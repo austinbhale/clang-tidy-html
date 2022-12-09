@@ -73,6 +73,8 @@ def main():
     parser.add_argument('file', type=Path)
     parser.add_argument(
         '-o', '--out', help="name for the generated html file.", nargs='?', const="clang.html", default="clang.html", type=str)
+    parser.add_argument(
+        '-d', '--checks_dict_url', help="Predefined check dictionary's URL.", nargs='?', type=str)
 
     try:
         args = parser.parse_args()
@@ -83,15 +85,19 @@ def main():
 
     tidy_log_lines: Path = args.file
     output_path: Path = Path(args.out)
-    clang_tidy_visualizer(tidy_log_lines, output_path)
+    clang_tidy_visualizer(tidy_log_lines, output_path, args.checks_dict_url)
 
 
 def clang_tidy_visualizer(tidy_log_file: Path,
-                          output_html_file: Path = Path("clang.html")):
+                          output_html_file: Path = Path("clang.html"),
+                          checks_dict_url = None):
     tidy_log_lines = tidy_log_file.read_text().splitlines()
     clang_base_url = "https://clang.llvm.org/extra/clang-tidy/checks/"
     global checks_dict
-    checks_dict_url = clang_base_url + 'list.html'
+
+    if checks_dict_url is None:
+        checks_dict_url = clang_base_url + 'list.html'
+
     checks_dict = find_checks_dict(checks_dict_url)
     checks_list = list(checks_dict.keys())
     checks_list.sort()
