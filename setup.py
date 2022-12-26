@@ -19,7 +19,7 @@ setup(
         "beautifulsoup4",
         "certifi",
         "lxml",
-        "sessions"
+        "requests"
     ],
     classifiers=[
         'Programming Language :: Python :: 3',
