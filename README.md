@@ -65,7 +65,7 @@ Clone or fork this repository to run the script on your native system.
 The script takes in one file argument of a txt or log file with your outputted clang-tidy checks.
 
 ```
-python -m clang_html [newfile.log] [-o clang.html] -d list.html
+python -m clang_html [newfile.log] [-o clang.html] [-d list.html]
 ```
 
 ## Example Output
@@ -84,9 +84,9 @@ Feel free to create a pull request for any updates or fixes to this repository.
 
 ## Versioning
 
-This repository uses [LLVM Clang](http://clang.llvm.org/extra/clang-tidy/index.html) for versioning. All checks confirmed for version 6.0-10.0+. Earlier versions should have support for the vast majority of checks. Later versions update based on the information presented on LLVM's official [checks list](http://clang.llvm.org/extra/clang-tidy/checks/list.html).
+This repository uses [LLVM Clang](http://clang.llvm.org/extra/clang-tidy/index.html) for versioning. By default, the script uses the latest information presented on LLVM's official [checks list](http://clang.llvm.org/extra/clang-tidy/checks/list.html). Earlier versions should have support for the vast majority of checks.
 
-The `-d --checks_dict_url` option the check list can be replaced another version.
+The `-d --checks_dict_url` command-line option can link to another version (e.g., find v14.0.0 checks with: https://releases.llvm.org/14.0.0/tools/clang/tools/extra/docs/clang-tidy/checks/list.html).
 
 ## Authors
 

@@ -2,9 +2,9 @@ import argparse
 import logging
 import re
 import sys
-import urllib.request
+from requests import Session
+from requests.adapters import HTTPAdapter
 from pathlib import Path
-
 from bs4 import BeautifulSoup
 import ssl
 import certifi
@@ -72,9 +72,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('file', type=Path)
     parser.add_argument(
-        '-o', '--out', help="name for the generated html file.", nargs='?', const="clang.html", default="clang.html", type=str)
+        '-o', '--out', help="Generated html file name.", nargs='?', const="clang.html", default="clang.html", type=str)
     parser.add_argument(
-        '-d', '--checks_dict_url', help="Predefined check dictionary's URL.", nargs='?', type=str)
+        '-d', '--checks_dict_url', help="Override the latest checks list, (e.g., v14.0.0 uses \
+        https://releases.llvm.org/14.0.0/tools/clang/tools/extra/docs/clang-tidy/checks/list.html).", nargs='?', type=str)
 
     try:
         args = parser.parse_args()
@@ -99,6 +100,9 @@ def clang_tidy_visualizer(tidy_log_file: Path,
         checks_dict_url = clang_base_url + 'list.html'
 
     checks_dict = find_checks_dict(checks_dict_url)
+    if checks_dict is None or len(checks_dict) == 0:
+        print("Error! Could not retrieve a dictionary of checks.")
+        exit(0)
     checks_list = list(checks_dict.keys())
     checks_list.sort()
 
@@ -178,21 +182,36 @@ def clang_tidy_visualizer(tidy_log_file: Path,
                         num_used_checks, names_of_used, clang_base_url)
         writeScript(clang_html, num_used_checks)
 
+# adapted from https://github.com/psf/requests/issues/4775#issuecomment-478198879
+class TLSAdapter(HTTPAdapter):
+    def init_poolmanager(self, *args, **kwargs):
+        ctx = ssl.create_default_context(cafile=certifi.where())
+        ctx.set_ciphers('DEFAULT@SECLEVEL=1')
+        kwargs['ssl_context'] = ctx
+        return super(TLSAdapter, self).init_poolmanager(*args, **kwargs)
 
 # Scrape data from clang-tidy's official list of current checks.
 def find_checks_dict(checks_dict_url: str):
-    resp = urllib.request.urlopen(
-        checks_dict_url, context=ssl.create_default_context(cafile=certifi.where()))
-    soup = BeautifulSoup(resp, "lxml")
+    session = Session()
+    session.mount('https://', TLSAdapter())
+    try:
+        res = session.get(checks_dict_url)
+    except Exception as e:
+        print(e)
+        return None
 
+    soup = BeautifulSoup(res.text, "lxml")
     scrape_checks_dict = dict()
-    for link in soup.find_all('a', href=True):
+    clang_check_links = soup.find_all('a', href=True)
+
+    for link in clang_check_links:
         match_docs_check_name = re.match(
             "^([a-zA-Z0-9].*).html.*$", link['href'])
         if match_docs_check_name:
             docs_check_name = match_docs_check_name.group(1)
             split_docs_check = docs_check_name.split('/')
-            if len(split_docs_check) == 2:
+            len_split_docs_check = len(split_docs_check)
+            if len_split_docs_check > 0 and len_split_docs_check <= 2:
                 scrape_checks_dict[fromClangDocsName(
                     docs_check_name)] = split_docs_check[0]
     return scrape_checks_dict
