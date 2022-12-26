@@ -27,10 +27,10 @@ In your python terminal:
 ```
 
 ### Libraries
-- [argparse](https://pypi.org/project/argparse/)
 - [beautifulsoup4](https://pypi.org/project/beautifulsoup4/)
 - [certifi](https://pypi.org/project/certifi/)
 - [lxml](https://pypi.org/project/lxml/)
+- [requests](https://pypi.org/project/requests/)
 
 ### Prerequisites
 
