@@ -1,4 +1,4 @@
 # how to upload to PyPI
-`rm -r dist`
-`python -m build`
-`python -m twine upload dist/*`
+1. `rm -r dist`
+2. `python -m build`
+3. `python -m twine upload dist/*`
