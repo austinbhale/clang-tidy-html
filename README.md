@@ -74,7 +74,7 @@ Inside the same directory as clang_visualizer.py, you will find a new html file 
 
 You can also specify your custom file name when calling the script with `[-o, --out] other_name.html` or `clang_tidy_visualizer(Path("sample.log"), Path("clang.html"))`.
 
-An example html output can be found [here](https://austinbhale.com/Clang-Visualizer/examples/clang.html).
+An example html output can be found [here](https://austinbhale.com/clang-tidy-html/examples/clang.html).
 
 The highlighting functionality uses your local session storage, which will save your changes on exit.
 
