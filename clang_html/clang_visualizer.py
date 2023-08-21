@@ -1,5 +1,6 @@
 import argparse
 import logging
+import platform
 import re
 import sys
 from requests import Session
@@ -40,6 +41,7 @@ def ansi_to_html(text):
 
     def single_sub(match):
         argsdict = match.groupdict()
+        bold = False
         color = '0'
         for arg in argsdict.values():
             if arg is not None:
@@ -186,7 +188,8 @@ def clang_tidy_visualizer(tidy_log_file: Path,
 class TLSAdapter(HTTPAdapter):
     def init_poolmanager(self, *args, **kwargs):
         ctx = ssl.create_default_context(cafile=certifi.where())
-        ctx.set_ciphers('DEFAULT@SECLEVEL=1')
+        if platform.system() != "Darwin":
+            ctx.set_ciphers('DEFAULT@SECLEVEL=1')
         kwargs['ssl_context'] = ctx
         return super(TLSAdapter, self).init_poolmanager(*args, **kwargs)
 
