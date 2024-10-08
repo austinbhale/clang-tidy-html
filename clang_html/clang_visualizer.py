@@ -5,6 +5,7 @@ import sys
 from requests import Session
 from requests.adapters import HTTPAdapter
 from pathlib import Path
+from urllib3.response import HTTPResponse
 from bs4 import BeautifulSoup
 import ssl
 import certifi
@@ -190,10 +191,20 @@ class TLSAdapter(HTTPAdapter):
         kwargs['ssl_context'] = ctx
         return super(TLSAdapter, self).init_poolmanager(*args, **kwargs)
 
+
+class FileAdapter(HTTPAdapter):
+    def send(self, request, *args, **kwargs):
+        resp = HTTPResponse(body=open(request.url[7:], 'rb'), status=200, preload_content=False)
+        return self.build_response(request, resp)
+
+
 # Scrape data from clang-tidy's official list of current checks.
 def find_checks_dict(checks_dict_url: str):
     session = Session()
-    session.mount('https://', TLSAdapter())
+    if checks_dict_url.startswith("file://"):
+        session.mount('file://', FileAdapter())
+    else:
+        session.mount('https://', TLSAdapter())
     try:
         res = session.get(checks_dict_url)
     except Exception as e:
